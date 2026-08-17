@@ -24,7 +24,7 @@ public class HabpyDuck {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
         String command = scanner.nextLine();
-        while (!command.equals("bye")) {
+        while (getCommandType(command) != CommandType.BYE) {
             System.out.println(SEPARATOR);
             try {
                 handleCommand(command, tasks);
@@ -48,36 +48,59 @@ public class HabpyDuck {
      * @throws HabpyDuckException if the command is invalid
      */
     private static void handleCommand(String command, ArrayList<Task> tasks) throws HabpyDuckException {
-        if (command.equals("list")) {
+        switch (getCommandType(command)) {
+        case LIST:
             printTaskList(tasks);
-        } else if (command.equals("mark") || command.startsWith("mark ")) {
+            break;
+        case MARK:
             int taskIndex = parseTaskIndex(command, "mark", tasks.size());
             tasks.get(taskIndex).markAsDone();
             System.out.println("YAY GOOD JOB!!! I've marked this task as done:");
             System.out.println("  " + tasks.get(taskIndex));
-        } else if (command.equals("unmark") || command.startsWith("unmark ")) {
-            int taskIndex = parseTaskIndex(command, "unmark", tasks.size());
-            tasks.get(taskIndex).markAsNotDone();
+            break;
+        case UNMARK:
+            int unmarkTaskIndex = parseTaskIndex(command, "unmark", tasks.size());
+            tasks.get(unmarkTaskIndex).markAsNotDone();
             System.out.println("OK, I've marked this task as not done yet, all the best friend:");
-            System.out.println("  " + tasks.get(taskIndex));
-        } else if (command.equals("delete") || command.startsWith("delete ")) {
-            int taskIndex = parseTaskIndex(command, "delete", tasks.size());
-            Task removedTask = tasks.remove(taskIndex);
+            System.out.println("  " + tasks.get(unmarkTaskIndex));
+            break;
+        case DELETE:
+            int deleteTaskIndex = parseTaskIndex(command, "delete", tasks.size());
+            Task removedTask = tasks.remove(deleteTaskIndex);
             System.out.println("Noted. I've removed this task:");
             System.out.println("  " + removedTask);
             System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        } else if (command.equals("todo") || command.startsWith("todo ")) {
+            break;
+        case TODO:
             String description = command.length() > 4 ? command.substring(5).trim() : "";
             addTask(new Todo(requireText(description, "The description of a todo cannot be empty.")), tasks);
-        } else if (command.equals("deadline") || command.startsWith("deadline ")) {
+            break;
+        case DEADLINE:
             addDeadline(command, tasks);
-        } else if (command.equals("event") || command.startsWith("event ")) {
+            break;
+        case EVENT:
             addEvent(command, tasks);
-        } else if (command.isBlank()) {
-            throw new HabpyDuckException("Please enter a command.");
-        } else {
+            break;
+        case UNKNOWN:
+            if (command.isBlank()) {
+                throw new HabpyDuckException("Please enter a command.");
+            }
             throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+        case BYE:
+            break;
         }
+    }
+
+    /**
+     * Finds the command type for the user's input.
+     *
+     * @param command the full command entered by the user
+     * @return the matching command type
+     */
+    private static CommandType getCommandType(String command) {
+        String trimmedCommand = command.trim();
+        String commandWord = trimmedCommand.split(" ", 2)[0];
+        return CommandType.fromCommandWord(commandWord);
     }
 
     /**
