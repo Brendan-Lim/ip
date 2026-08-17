@@ -72,6 +72,115 @@ Bye friend. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+## Test Case: delete removes a task and preserves remaining state
+
+### Aim
+
+Verify that deleting a middle task removes only that task, renumbers the remaining tasks, keeps their done statuses, and handles invalid delete commands without changing the list.
+
+### Inputs
+
+```text
+todo read book
+deadline return book /by June 6th
+event project meeting /from Aug 6th 2pm /to 4pm
+todo join sports club
+mark 1
+mark 2
+mark 4
+list
+delete 3
+list
+delete
+delete abc
+delete 9
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] join sports club
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+YAY GOOD JOB!!! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+YAY GOOD JOB!!! I've marked this task as done:
+  [D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+YAY GOOD JOB!!! I've marked this task as done:
+  [T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+4.[T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Please tell me which task to delete, like: delete 2
+____________________________________________________________
+____________________________________________________________
+Please use a number after delete, like: delete 2
+____________________________________________________________
+____________________________________________________________
+Task 9 does not exist in your list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: June 6th)
+3.[T][X] join sports club
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Test Case: invalid commands do not change task state
 
 ### Aim
@@ -122,7 +231,7 @@ ____________________________________________________________
 The description of a todo cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, or unmark!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -295,7 +404,7 @@ ____________________________________________________________
 The description of a todo cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, or unmark!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
 ____________________________________________________________
 ____________________________________________________________
 Please tell me which task to mark, like: mark 2
