@@ -22,8 +22,7 @@ public class HabpyDuck {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[MAX_TASKS];
-        boolean[] isDone = new boolean[MAX_TASKS];
+        Task[] tasks = new Task[MAX_TASKS];
         int taskCount = 0;
         String command = scanner.nextLine();
         while (!command.equals("bye")) {
@@ -31,23 +30,23 @@ public class HabpyDuck {
             if (command.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    String statusIcon = isDone[i] ? "X" : " ";
-                    System.out.println((i + 1) + ".[" + statusIcon + "] " + tasks[i]);
+                    System.out.println((i + 1) + ".[" + tasks[i].getStatusIcon() + "] "
+                            + tasks[i].getDescription());
                 }
             } else if (command.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(command.substring(5));
                 int taskIndex = taskNumber - 1;
-                isDone[taskIndex] = true;
+                tasks[taskIndex].markAsDone();
                 System.out.println("Nice! I've marked this task as done:");
-                System.out.println("  [X] " + tasks[taskIndex]);
+                System.out.println("  [X] " + tasks[taskIndex].getDescription());
             } else if (command.startsWith("unmark ")) {
                 int taskNumber = Integer.parseInt(command.substring(7));
                 int taskIndex = taskNumber - 1;
-                isDone[taskIndex] = false;
+                tasks[taskIndex].markAsNotDone();
                 System.out.println("OK, I've marked this task as not done yet:");
-                System.out.println("  [ ] " + tasks[taskIndex]);
+                System.out.println("  [ ] " + tasks[taskIndex].getDescription());
             } else {
-                tasks[taskCount] = command;
+                tasks[taskCount] = new Task(command);
                 taskCount++;
                 System.out.println("added: " + command);
             }
