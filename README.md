@@ -15,12 +15,12 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    In the same dialog, set the **Project language level** field to the `SDK default` option.
 1. After that, locate the `src/main/java/HabpyDuck.java` file, right-click it, and choose `Run HabpyDuck.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
    ```
-   " _   _       _                 ____             _    \n"
-   + "| | | | __ _| |__  _ __  _   _|  _ \\ _   _  ___| | __\n"
-   + "| |_| |/ _` | '_ \\| '_ \\| | | | | | | | | |/ __| |/ /\n"
-   + "|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < \n"
-   + "|_| |_|\\__,_|_.__/| .__/ \\__, |____/ \\__,_|\\___|_|\\_\\\n"
-   + "                  |_|    |___/                       \n";
+    _   _       _                 ____             _
+   | | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+   | |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+   |  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   <
+   |_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                     |_|    |___/
    ```
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
