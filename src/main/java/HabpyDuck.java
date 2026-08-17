@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -6,7 +7,6 @@ import java.util.Scanner;
 public class HabpyDuck {
     private static final String CHATBOT_NAME = "HabpyDuck";
     private static final String SEPARATOR = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
 
     public static void main(String[] args) {
         String banner = " _   _       _                 ____             _    \n"
@@ -22,13 +22,12 @@ public class HabpyDuck {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_TASKS];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         String command = scanner.nextLine();
         while (!command.equals("bye")) {
             System.out.println(SEPARATOR);
             try {
-                taskCount = handleCommand(command, tasks, taskCount);
+                handleCommand(command, tasks);
             } catch (HabpyDuckException e) {
                 System.out.println(e.getMessage());
             }
@@ -42,55 +41,54 @@ public class HabpyDuck {
     }
 
     /**
-     * Runs one user command and returns the updated number of tasks.
+     * Runs one user command.
      *
      * @param command the command entered by the user
-     * @param tasks the array that stores all tasks
-     * @param taskCount the number of tasks currently stored
-     * @return the updated number of tasks
+     * @param tasks the list that stores all tasks
      * @throws HabpyDuckException if the command is invalid
      */
-    private static int handleCommand(String command, Task[] tasks, int taskCount) throws HabpyDuckException {
+    private static void handleCommand(String command, ArrayList<Task> tasks) throws HabpyDuckException {
         if (command.equals("list")) {
-            printTaskList(tasks, taskCount);
-            return taskCount;
+            printTaskList(tasks);
         } else if (command.equals("mark") || command.startsWith("mark ")) {
-            int taskIndex = parseTaskIndex(command, "mark", taskCount);
-            tasks[taskIndex].markAsDone();
+            int taskIndex = parseTaskIndex(command, "mark", tasks.size());
+            tasks.get(taskIndex).markAsDone();
             System.out.println("YAY GOOD JOB!!! I've marked this task as done:");
-            System.out.println("  " + tasks[taskIndex]);
-            return taskCount;
+            System.out.println("  " + tasks.get(taskIndex));
         } else if (command.equals("unmark") || command.startsWith("unmark ")) {
-            int taskIndex = parseTaskIndex(command, "unmark", taskCount);
-            tasks[taskIndex].markAsNotDone();
+            int taskIndex = parseTaskIndex(command, "unmark", tasks.size());
+            tasks.get(taskIndex).markAsNotDone();
             System.out.println("OK, I've marked this task as not done yet, all the best friend:");
-            System.out.println("  " + tasks[taskIndex]);
-            return taskCount;
+            System.out.println("  " + tasks.get(taskIndex));
+        } else if (command.equals("delete") || command.startsWith("delete ")) {
+            int taskIndex = parseTaskIndex(command, "delete", tasks.size());
+            Task removedTask = tasks.remove(taskIndex);
+            System.out.println("Noted. I've removed this task:");
+            System.out.println("  " + removedTask);
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
         } else if (command.equals("todo") || command.startsWith("todo ")) {
             String description = command.length() > 4 ? command.substring(5).trim() : "";
-            return addTask(new Todo(requireText(description, "The description of a todo cannot be empty.")),
-                    tasks, taskCount);
+            addTask(new Todo(requireText(description, "The description of a todo cannot be empty.")), tasks);
         } else if (command.equals("deadline") || command.startsWith("deadline ")) {
-            return addDeadline(command, tasks, taskCount);
+            addDeadline(command, tasks);
         } else if (command.equals("event") || command.startsWith("event ")) {
-            return addEvent(command, tasks, taskCount);
+            addEvent(command, tasks);
         } else if (command.isBlank()) {
             throw new HabpyDuckException("Please enter a command.");
         } else {
-            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, or unmark!");
+            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
         }
     }
 
     /**
      * Prints all tasks in the task list.
      *
-     * @param tasks the array that stores all tasks
-     * @param taskCount the number of tasks currently stored
+     * @param tasks the list that stores all tasks
      */
-    private static void printTaskList(Task[] tasks, int taskCount) {
+    private static void printTaskList(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println((i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -98,12 +96,10 @@ public class HabpyDuck {
      * Creates and stores a deadline task from a deadline command.
      *
      * @param command the full deadline command
-     * @param tasks the array that stores all tasks
-     * @param taskCount the number of tasks currently stored
-     * @return the updated number of tasks
+     * @param tasks the list that stores all tasks
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static int addDeadline(String command, Task[] tasks, int taskCount) throws HabpyDuckException {
+    private static void addDeadline(String command, ArrayList<Task> tasks) throws HabpyDuckException {
         String taskDetails = command.length() > 8 ? command.substring(9) : "";
         int byIndex = taskDetails.indexOf(" /by ");
         if (byIndex == -1) {
@@ -114,19 +110,17 @@ public class HabpyDuck {
                 "The description of a deadline cannot be empty. Try again my friend!");
         String by = requireText(taskDetails.substring(byIndex + 5).trim(),
                 "The deadline time cannot be empty. Try again my friend!");
-        return addTask(new Deadline(description, by), tasks, taskCount);
+        addTask(new Deadline(description, by), tasks);
     }
 
     /**
      * Creates and stores an event task from an event command.
      *
      * @param command the full event command
-     * @param tasks the array that stores all tasks
-     * @param taskCount the number of tasks currently stored
-     * @return the updated number of tasks
+     * @param tasks the list that stores all tasks
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static int addEvent(String command, Task[] tasks, int taskCount) throws HabpyDuckException {
+    private static void addEvent(String command, ArrayList<Task> tasks) throws HabpyDuckException {
         String taskDetails = command.length() > 5 ? command.substring(6) : "";
         int fromIndex = taskDetails.indexOf(" /from ");
         int toIndex = taskDetails.indexOf(" /to ", fromIndex + 7);
@@ -140,29 +134,20 @@ public class HabpyDuck {
                 "The start time of an event cannot be empty. Try again my friend!");
         String to = requireText(taskDetails.substring(toIndex + 5).trim(),
                 "The end time of an event cannot be empty. Try again my friend!");
-        return addTask(new Event(description, from, to), tasks, taskCount);
+        addTask(new Event(description, from, to), tasks);
     }
 
     /**
      * Stores a task and prints the standard message for added tasks.
      *
      * @param task the task to add
-     * @param tasks the array that stores all tasks
-     * @param taskCount the number of tasks currently stored
-     * @return the updated number of tasks
-     * @throws HabpyDuckException if the task list is already full
+     * @param tasks the list that stores all tasks
      */
-    private static int addTask(Task task, Task[] tasks, int taskCount) throws HabpyDuckException {
-        if (taskCount >= MAX_TASKS) {
-            throw new HabpyDuckException("Your task list is full. Please finish some tasks before adding more!");
-        }
-
-        tasks[taskCount] = task;
-        taskCount++;
+    private static void addTask(Task task, ArrayList<Task> tasks) {
+        tasks.add(task);
         System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks[taskCount - 1]);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
-        return taskCount;
+        System.out.println("  " + tasks.get(tasks.size() - 1));
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
