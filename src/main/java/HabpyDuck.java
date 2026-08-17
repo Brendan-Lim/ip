@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class HabpyDuck {
     private static final String CHATBOT_NAME = "HabpyDuck";
     private static final String SEPARATOR = "____________________________________________________________";
+    private static final int MAX_TASKS = 100;
 
     public static void main(String[] args) {
         String banner = " _   _       _                 ____             _    \n"
@@ -21,10 +22,20 @@ public class HabpyDuck {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
+        String[] tasks = new String[MAX_TASKS];
+        int taskCount = 0;
         String command = scanner.nextLine();
         while (!command.equals("bye")) {
             System.out.println(SEPARATOR);
-            System.out.println(command);
+            if (command.equals("list")) {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
+            } else {
+                tasks[taskCount] = command;
+                taskCount++;
+                System.out.println("added: " + command);
+            }
             System.out.println(SEPARATOR);
             command = scanner.nextLine();
         }
