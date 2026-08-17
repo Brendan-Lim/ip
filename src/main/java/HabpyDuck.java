@@ -1,3 +1,8 @@
+import java.util.Scanner;
+
+/**
+ * Entry point for the HabpyDuck chatbot.
+ */
 public class HabpyDuck {
     private static final String CHATBOT_NAME = "HabpyDuck";
     private static final String SEPARATOR = "____________________________________________________________";
@@ -14,7 +19,18 @@ public class HabpyDuck {
         System.out.println("Hi friend! I'm " + CHATBOT_NAME + ".");
         System.out.println("What can I do for you today?");
         System.out.println(SEPARATOR);
-        System.out.println("Bye. Hope to see you again soon!");
+
+        Scanner scanner = new Scanner(System.in);
+        String command = scanner.nextLine();
+        while (!command.equals("bye")) {
+            System.out.println(SEPARATOR);
+            System.out.println(command);
+            System.out.println(SEPARATOR);
+            command = scanner.nextLine();
+        }
+
+        System.out.println(SEPARATOR);
+        System.out.println("Bye friend. Hope to see you again soon!");
         System.out.println(SEPARATOR);
     }
 }
