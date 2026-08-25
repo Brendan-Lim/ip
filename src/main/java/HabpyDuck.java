@@ -2,6 +2,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +16,7 @@ public class HabpyDuck {
     private static final String CHATBOT_NAME = "HabpyDuck";
     private static final String SEPARATOR = "____________________________________________________________";
     private static final Path SAVE_FILE_PATH = Path.of("data", "habpyduck.txt");
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public static void main(String[] args) {
         String banner = " _   _       _                 ____             _    \n"
@@ -27,7 +32,7 @@ public class HabpyDuck {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = loadTasks();
+        ArrayList<Task> tasks = loadTasks(false);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             if (getCommandType(command) == CommandType.BYE) {
@@ -58,6 +63,8 @@ public class HabpyDuck {
     private static void handleCommand(String command, ArrayList<Task> tasks) throws HabpyDuckException {
         switch (getCommandType(command)) {
         case LIST:
+            tasks.clear();
+            tasks.addAll(loadTasks(true));
             printTaskList(tasks);
             break;
         case MARK:
@@ -99,7 +106,8 @@ public class HabpyDuck {
             break;
         case TODO:
             String description = command.length() > 4 ? command.substring(5).trim() : "";
-            addTask(new Todo(requireText(description, "The description of a todo cannot be empty.")), tasks);
+            addTask(new Todo(requireText(description,
+                    "OH NO!!! A todo needs a description, friend. Try something like: todo read book")), tasks);
             break;
         case DEADLINE:
             addDeadline(command, tasks);
@@ -109,7 +117,7 @@ public class HabpyDuck {
             break;
         case UNKNOWN:
             if (command.isBlank()) {
-                throw new HabpyDuckException("Please enter a command.");
+                throw new HabpyDuckException("OH NO!!! I didn't catch a command, friend. Please type something for me.");
             }
             throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
         case BYE:
@@ -152,14 +160,15 @@ public class HabpyDuck {
         String taskDetails = command.length() > 8 ? command.substring(9) : "";
         int byIndex = taskDetails.indexOf(" /by ");
         if (byIndex == -1) {
-            throw new HabpyDuckException("Please use this format: deadline DESCRIPTION /by WHEN :)");
+            throw new HabpyDuckException(
+                    "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)");
         }
 
         String description = requireText(taskDetails.substring(0, byIndex).trim(),
-                "The description of a deadline cannot be empty. Try again my friend!");
+                "OH NO!!! A deadline needs a description, friend. Try again!");
         String by = requireText(taskDetails.substring(byIndex + 5).trim(),
-                "The deadline time cannot be empty. Try again my friend!");
-        addTask(new Deadline(description, by), tasks);
+                "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
+        addTask(new Deadline(description, parseUserDeadlineDateTime(by)), tasks);
     }
 
     /**
@@ -174,15 +183,16 @@ public class HabpyDuck {
         int fromIndex = taskDetails.indexOf(" /from ");
         int toIndex = taskDetails.indexOf(" /to ", fromIndex + 7);
         if (fromIndex == -1 || toIndex == -1) {
-            throw new HabpyDuckException("Please use this format: event DESCRIPTION /from START /to END :)");
+            throw new HabpyDuckException(
+                    "OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)");
         }
 
         String description = requireText(taskDetails.substring(0, fromIndex).trim(),
-                "The description of an event cannot be empty. Try again my friend!");
+                "OH NO!!! An event needs a description, friend. Try again!");
         String from = requireText(taskDetails.substring(fromIndex + 7, toIndex).trim(),
-                "The start time of an event cannot be empty. Try again my friend!");
+                "OH NO!!! An event needs a start time, friend. Try again!");
         String to = requireText(taskDetails.substring(toIndex + 5).trim(),
-                "The end time of an event cannot be empty. Try again my friend!");
+                "OH NO!!! An event needs an end time, friend. Try again!");
         addTask(new Event(description, from, to), tasks);
     }
 
@@ -220,16 +230,17 @@ public class HabpyDuck {
             }
             Files.write(SAVE_FILE_PATH, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new HabpyDuckException("Could not save tasks to " + SAVE_FILE_PATH + ".");
+            throw new HabpyDuckException("OH NO!!! I could not save your tasks to " + SAVE_FILE_PATH + ".");
         }
     }
 
     /**
      * Loads saved tasks from disk when the chatbot starts.
      *
+     * @param shouldShowWarnings whether to print warnings for malformed saved tasks
      * @return the tasks stored in the save file, or an empty list if there is no save file yet
      */
-    private static ArrayList<Task> loadTasks() {
+    private static ArrayList<Task> loadTasks(boolean shouldShowWarnings) {
         ArrayList<Task> tasks = new ArrayList<>();
         if (!Files.exists(SAVE_FILE_PATH)) {
             return tasks;
@@ -246,11 +257,16 @@ public class HabpyDuck {
                 try {
                     tasks.add(parseTaskFromFile(line));
                 } catch (HabpyDuckException e) {
-                    System.out.println("Skipping saved task on line " + (i + 1) + ": " + e.getMessage());
+                    if (shouldShowWarnings) {
+                        System.out.println("OH NO!!! I had trouble loading saved task on line "
+                                + (i + 1) + ": " + e.getMessage());
+                    }
                 }
             }
         } catch (IOException e) {
-            System.out.println("Could not load tasks from " + SAVE_FILE_PATH + ".");
+            if (shouldShowWarnings) {
+                System.out.println("OH NO!!! I could not load tasks from " + SAVE_FILE_PATH + ".");
+            }
         }
         return tasks;
     }
@@ -269,7 +285,7 @@ public class HabpyDuck {
         Task task;
         switch (parts[0]) {
         case "D":
-            task = new Deadline(unescapeFileField(parts[2]), unescapeFileField(parts[3]));
+            task = new Deadline(unescapeFileField(parts[2]), parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
             break;
         case "E":
             task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]), unescapeFileField(parts[4]));
@@ -285,6 +301,41 @@ public class HabpyDuck {
             task.markAsDone();
         }
         return task;
+    }
+
+    /**
+     * Converts deadline text entered by the user into a LocalDateTime.
+     *
+     * @param dateTimeText the date and time entered by the user
+     * @return the parsed date and time
+     * @throws HabpyDuckException if the date and time is not in d/M/yyyy HHmm format
+     */
+    private static LocalDateTime parseUserDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
+        try {
+            return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new HabpyDuckException(
+                    "OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800");
+        }
+    }
+
+    /**
+     * Converts deadline text from the save file into a LocalDateTime.
+     *
+     * @param dateTimeText the saved date and time text
+     * @return the parsed date and time
+     * @throws HabpyDuckException if the saved value is not an ISO date or date-time
+     */
+    private static LocalDateTime parseSavedDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
+        try {
+            return LocalDateTime.parse(dateTimeText);
+        } catch (DateTimeParseException dateTimeError) {
+            try {
+                return LocalDate.parse(dateTimeText).atStartOfDay();
+            } catch (DateTimeParseException dateError) {
+                throw new HabpyDuckException("saved deadline date and time must use yyyy-MM-ddTHH:mm format");
+            }
+        }
     }
 
     /**
@@ -388,7 +439,7 @@ public class HabpyDuck {
     private static int parseTaskIndex(String command, String commandWord, int taskCount) throws HabpyDuckException {
         String taskNumberText = command.substring(commandWord.length()).trim();
         if (taskNumberText.isEmpty()) {
-            throw new HabpyDuckException("Please tell me which task to " + commandWord + ", like: "
+            throw new HabpyDuckException("OH NO!!! Please tell me which task to " + commandWord + ", like: "
                     + commandWord + " 2");
         }
 
@@ -396,11 +447,11 @@ public class HabpyDuck {
             int taskNumber = Integer.parseInt(taskNumberText);
             int taskIndex = taskNumber - 1;
             if (taskIndex < 0 || taskIndex >= taskCount) {
-                throw new HabpyDuckException("Task " + taskNumber + " does not exist in your list.");
+                throw new HabpyDuckException("OH NO!!! Task " + taskNumber + " does not exist in your list.");
             }
             return taskIndex;
         } catch (NumberFormatException e) {
-            throw new HabpyDuckException("Please use a number after " + commandWord + ", like: "
+            throw new HabpyDuckException("OH NO!!! Please use a number after " + commandWord + ", like: "
                     + commandWord + " 2");
         }
     }
