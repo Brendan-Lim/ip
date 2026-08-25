@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /**
  * Entry point for the HabpyDuck chatbot.
  */
@@ -10,7 +8,7 @@ public class HabpyDuck {
         Parser parser = new Parser();
         ui.showWelcome();
 
-        ArrayList<Task> tasks = storage.loadTasks();
+        TaskList tasks = new TaskList(storage.loadTasks());
         while (ui.hasNextCommand()) {
             String command = ui.readCommand();
             if (parser.getCommandType(command) == CommandType.BYE) {
@@ -39,43 +37,42 @@ public class HabpyDuck {
      * @param parser the parser used to interpret command details
      * @throws HabpyDuckException if the command is invalid
      */
-    private static void handleCommand(String command, ArrayList<Task> tasks, Ui ui, Storage storage, Parser parser)
+    private static void handleCommand(String command, TaskList tasks, Ui ui, Storage storage, Parser parser)
             throws HabpyDuckException {
         switch (parser.getCommandType(command)) {
         case LIST:
-            tasks.clear();
-            tasks.addAll(storage.loadTasks(true, ui));
-            ui.showTaskList(tasks);
+            tasks.replaceAll(storage.loadTasks(true, ui));
+            ui.showTaskList(tasks.asList());
             break;
         case MARK:
             int taskIndex = parser.parseTaskIndex(command, "mark", tasks.size());
-            tasks.get(taskIndex).markAsDone();
+            tasks.markAsDone(taskIndex);
             try {
-                storage.saveTasks(tasks);
+                storage.saveTasks(tasks.asList());
             } catch (HabpyDuckException e) {
-                tasks.get(taskIndex).markAsNotDone();
+                tasks.markAsNotDone(taskIndex);
                 throw e;
             }
             ui.showTaskMarked(tasks.get(taskIndex));
             break;
         case UNMARK:
             int unmarkTaskIndex = parser.parseTaskIndex(command, "unmark", tasks.size());
-            tasks.get(unmarkTaskIndex).markAsNotDone();
+            tasks.markAsNotDone(unmarkTaskIndex);
             try {
-                storage.saveTasks(tasks);
+                storage.saveTasks(tasks.asList());
             } catch (HabpyDuckException e) {
-                tasks.get(unmarkTaskIndex).markAsDone();
+                tasks.markAsDone(unmarkTaskIndex);
                 throw e;
             }
             ui.showTaskUnmarked(tasks.get(unmarkTaskIndex));
             break;
         case DELETE:
             int deleteTaskIndex = parser.parseTaskIndex(command, "delete", tasks.size());
-            Task removedTask = tasks.remove(deleteTaskIndex);
+            Task removedTask = tasks.delete(deleteTaskIndex);
             try {
-                storage.saveTasks(tasks);
+                storage.saveTasks(tasks.asList());
             } catch (HabpyDuckException e) {
-                tasks.add(deleteTaskIndex, removedTask);
+                tasks.insert(deleteTaskIndex, removedTask);
                 throw e;
             }
             ui.showTaskDeleted(removedTask, tasks.size());
@@ -112,7 +109,7 @@ public class HabpyDuck {
      * @param parser the parser used to interpret command details
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static void addDeadline(String command, ArrayList<Task> tasks, Ui ui, Storage storage, Parser parser)
+    private static void addDeadline(String command, TaskList tasks, Ui ui, Storage storage, Parser parser)
             throws HabpyDuckException {
         String taskDetails = command.length() > 8 ? command.substring(9) : "";
         int byIndex = taskDetails.indexOf(" /by ");
@@ -137,7 +134,7 @@ public class HabpyDuck {
      * @param storage the storage used to save tasks
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static void addEvent(String command, ArrayList<Task> tasks, Ui ui, Storage storage)
+    private static void addEvent(String command, TaskList tasks, Ui ui, Storage storage)
             throws HabpyDuckException {
         String taskDetails = command.length() > 5 ? command.substring(6) : "";
         int fromIndex = taskDetails.indexOf(" /from ");
@@ -164,12 +161,12 @@ public class HabpyDuck {
      * @param ui the UI used to show command results
      * @param storage the storage used to save tasks
      */
-    private static void addTask(Task task, ArrayList<Task> tasks, Ui ui, Storage storage) throws HabpyDuckException {
+    private static void addTask(Task task, TaskList tasks, Ui ui, Storage storage) throws HabpyDuckException {
         tasks.add(task);
         try {
-            storage.saveTasks(tasks);
+            storage.saveTasks(tasks.asList());
         } catch (HabpyDuckException e) {
-            tasks.remove(tasks.size() - 1);
+            tasks.removeLast();
             throw e;
         }
         ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
