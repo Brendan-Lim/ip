@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import difflib
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[4]
 TEST_PLAN = ROOT / "test" / "ui-test-plan.md"
 CLASS_DIR = Path("/tmp/habpyduck-ui-test-classes")
 MAIN_CLASS = "HabpyDuck"
+SAVE_DIR = ROOT / "data"
 SAVE_FILE = ROOT / "data" / "habpyduck.txt"
 
 
@@ -99,8 +101,8 @@ def compile_program() -> None:
 
 def run_program(case: TestCase) -> str:
     """Run the console program once with the given input transcript."""
-    if SAVE_FILE.exists():
-        SAVE_FILE.unlink()
+    if SAVE_DIR.exists():
+        shutil.rmtree(SAVE_DIR)
     if case.initial_file_content is not None:
         SAVE_FILE.parent.mkdir(parents=True, exist_ok=True)
         SAVE_FILE.write_text(case.initial_file_content + "\n", encoding="utf-8")
