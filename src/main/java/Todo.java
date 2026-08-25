@@ -12,6 +12,16 @@ public class Todo extends Task {
     }
 
     /**
+     * Returns this todo in the simple text format used when saving tasks.
+     *
+     * @return a line of text that can be written to the save file
+     */
+    @Override
+    public String toFileString() {
+        return "T | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description);
+    }
+
+    /**
      * Returns the todo task in the format shown to users.
      *
      * @return the task type, status icon, and description

@@ -16,6 +16,17 @@ public class Deadline extends Task {
     }
 
     /**
+     * Returns this deadline in the simple text format used when saving tasks.
+     *
+     * @return a line of text that can be written to the save file
+     */
+    @Override
+    public String toFileString() {
+        return "D | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description)
+                + " | " + HabpyDuck.escapeFileField(by);
+    }
+
+    /**
      * Returns the deadline task in the format shown to users.
      *
      * @return the task type, status icon, description, and deadline

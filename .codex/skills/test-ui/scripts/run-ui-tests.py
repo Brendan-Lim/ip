@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import difflib
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -15,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[4]
 TEST_PLAN = ROOT / "test" / "ui-test-plan.md"
 CLASS_DIR = Path("/tmp/habpyduck-ui-test-classes")
 MAIN_CLASS = "HabpyDuck"
+SAVE_DIR = ROOT / "data"
+SAVE_FILE = ROOT / "data" / "habpyduck.txt"
 
 
 @dataclass
@@ -25,6 +28,8 @@ class TestCase:
     aim: str
     inputs: str
     expected_output: str
+    initial_file_content: str | None = None
+    expected_file_content: str | None = None
 
 
 def normalize(output: str) -> str:
@@ -50,6 +55,15 @@ def extract_code_block(section: str, heading: str) -> str:
     return match.group(1)
 
 
+def extract_optional_code_block(body: str, heading: str) -> str | None:
+    """Extract an optional fenced code block from a test-case body."""
+    try:
+        section = extract_section(body, heading)
+    except ValueError:
+        return None
+    return extract_code_block(section, heading)
+
+
 def read_test_plan() -> list[TestCase]:
     """Read test cases from test/ui-test-plan.md."""
     if not TEST_PLAN.exists():
@@ -66,7 +80,11 @@ def read_test_plan() -> list[TestCase]:
         expected_output = extract_code_block(
             extract_section(body, "Expected output"), "Expected output"
         )
-        cases.append(TestCase(name, aim, inputs, expected_output))
+        initial_file_content = extract_optional_code_block(body, "Initial saved file content")
+        expected_file_content = extract_optional_code_block(body, "Expected saved file content")
+        cases.append(
+            TestCase(name, aim, inputs, expected_output, initial_file_content, expected_file_content)
+        )
 
     if not cases:
         raise ValueError("No test cases found. Use '## Test Case: <name>' headings.")
@@ -81,12 +99,17 @@ def compile_program() -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
 
-def run_program(inputs: str) -> str:
+def run_program(case: TestCase) -> str:
     """Run the console program once with the given input transcript."""
+    if SAVE_DIR.exists():
+        shutil.rmtree(SAVE_DIR)
+    if case.initial_file_content is not None:
+        SAVE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        SAVE_FILE.write_text(case.initial_file_content + "\n", encoding="utf-8")
     process = subprocess.run(
         ["java", "-cp", str(CLASS_DIR), MAIN_CLASS],
         cwd=ROOT,
-        input=inputs,
+        input=case.inputs,
         text=True,
         capture_output=True,
         check=False,
@@ -94,6 +117,13 @@ def run_program(inputs: str) -> str:
     if process.returncode != 0:
         return process.stdout + process.stderr
     return process.stdout
+
+
+def get_saved_file_content() -> str:
+    """Read the saved task file, or return an empty string if it was not created."""
+    if not SAVE_FILE.exists():
+        return ""
+    return SAVE_FILE.read_text(encoding="utf-8")
 
 
 def print_transcript(case: TestCase, actual_output: str) -> None:
@@ -116,7 +146,7 @@ def main() -> int:
         return 1
 
     for index, case in enumerate(cases, start=1):
-        actual_output = run_program(case.inputs)
+        actual_output = run_program(case)
         if normalize(actual_output) != normalize(case.expected_output):
             print(f"FAILED test {index}: {case.name}")
             print(f"Aim: {case.aim}")
@@ -138,6 +168,28 @@ def main() -> int:
             ):
                 print(line)
             return 1
+
+        if case.expected_file_content is not None:
+            actual_file_content = get_saved_file_content()
+            if normalize(actual_file_content) != normalize(case.expected_file_content):
+                print(f"FAILED test {index}: {case.name}")
+                print(f"Aim: {case.aim}")
+                print("\nExpected saved file content:")
+                print(case.expected_file_content)
+                print("\nActual saved file content:")
+                print(actual_file_content)
+                print("\nUnified diff:")
+                expected_lines = normalize(case.expected_file_content).splitlines()
+                actual_lines = normalize(actual_file_content).splitlines()
+                for line in difflib.unified_diff(
+                    expected_lines,
+                    actual_lines,
+                    fromfile="expected",
+                    tofile="actual",
+                    lineterm="",
+                ):
+                    print(line)
+                return 1
 
         print(f"PASSED test {index}: {case.name}")
         print_transcript(case, actual_output)

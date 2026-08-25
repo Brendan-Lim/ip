@@ -48,6 +48,24 @@ public class Task {
     }
 
     /**
+     * Returns this task in the simple text format used when saving tasks.
+     *
+     * @return a line of text that can be written to the save file
+     */
+    public String toFileString() {
+        return "T | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description);
+    }
+
+    /**
+     * Returns the numeric status used in the save file.
+     *
+     * @return 1 if this task is done, or 0 if it is not done
+     */
+    protected String getDoneStatus() {
+        return isDone ? "1" : "0";
+    }
+
+    /**
      * Returns the task in the format shown to users.
      *
      * @return the task status icon and description
