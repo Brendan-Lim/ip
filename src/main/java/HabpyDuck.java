@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,6 +11,7 @@ import java.util.Scanner;
 public class HabpyDuck {
     private static final String CHATBOT_NAME = "HabpyDuck";
     private static final String SEPARATOR = "____________________________________________________________";
+    private static final Path SAVE_FILE_PATH = Path.of("data", "habpyduck.txt");
 
     public static void main(String[] args) {
         String banner = " _   _       _                 ____             _    \n"
@@ -55,18 +60,21 @@ public class HabpyDuck {
         case MARK:
             int taskIndex = parseTaskIndex(command, "mark", tasks.size());
             tasks.get(taskIndex).markAsDone();
+            saveTasks(tasks);
             System.out.println("YAY GOOD JOB!!! I've marked this task as done:");
             System.out.println("  " + tasks.get(taskIndex));
             break;
         case UNMARK:
             int unmarkTaskIndex = parseTaskIndex(command, "unmark", tasks.size());
             tasks.get(unmarkTaskIndex).markAsNotDone();
+            saveTasks(tasks);
             System.out.println("OK, I've marked this task as not done yet, all the best friend:");
             System.out.println("  " + tasks.get(unmarkTaskIndex));
             break;
         case DELETE:
             int deleteTaskIndex = parseTaskIndex(command, "delete", tasks.size());
             Task removedTask = tasks.remove(deleteTaskIndex);
+            saveTasks(tasks);
             System.out.println("Noted. I've removed this task:");
             System.out.println("  " + removedTask);
             System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -166,11 +174,31 @@ public class HabpyDuck {
      * @param task the task to add
      * @param tasks the list that stores all tasks
      */
-    private static void addTask(Task task, ArrayList<Task> tasks) {
+    private static void addTask(Task task, ArrayList<Task> tasks) throws HabpyDuckException {
         tasks.add(task);
+        saveTasks(tasks);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks.get(tasks.size() - 1));
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+    }
+
+    /**
+     * Saves the current tasks to disk, replacing the old file contents.
+     *
+     * @param tasks the list of tasks to save
+     * @throws HabpyDuckException if the file cannot be written
+     */
+    private static void saveTasks(ArrayList<Task> tasks) throws HabpyDuckException {
+        try {
+            Files.createDirectories(SAVE_FILE_PATH.getParent());
+            ArrayList<String> lines = new ArrayList<>();
+            for (Task task : tasks) {
+                lines.add(task.toFileString());
+            }
+            Files.write(SAVE_FILE_PATH, lines, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new HabpyDuckException("Could not save tasks to " + SAVE_FILE_PATH + ".");
+        }
     }
 
     /**

@@ -19,6 +19,16 @@ public class Event extends Task {
     }
 
     /**
+     * Returns this event in the simple text format used when saving tasks.
+     *
+     * @return a line of text that can be written to the save file
+     */
+    @Override
+    public String toFileString() {
+        return "E | " + getDoneStatus() + " | " + description + " | " + from + " | " + to;
+    }
+
+    /**
      * Returns the event task in the format shown to users.
      *
      * @return the task type, status icon, description, start, and end

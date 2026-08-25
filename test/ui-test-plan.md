@@ -181,6 +181,14 @@ Bye friend. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+### Expected saved file content
+
+```text
+T | 1 | read book
+D | 1 | return book | June 6th
+T | 1 | join sports club
+```
+
 ## Test Case: invalid commands do not change task state
 
 ### Aim
