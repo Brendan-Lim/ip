@@ -1,8 +1,3 @@
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,14 +7,14 @@ import java.util.ArrayList;
  * Entry point for the HabpyDuck chatbot.
  */
 public class HabpyDuck {
-    private static final Path SAVE_FILE_PATH = Path.of("data", "habpyduck.txt");
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public static void main(String[] args) {
         Ui ui = new Ui();
+        Storage storage = new Storage("data", "habpyduck.txt");
         ui.showWelcome();
 
-        ArrayList<Task> tasks = loadTasks();
+        ArrayList<Task> tasks = storage.loadTasks();
         while (ui.hasNextCommand()) {
             String command = ui.readCommand();
             if (getCommandType(command) == CommandType.BYE) {
@@ -28,7 +23,7 @@ public class HabpyDuck {
 
             ui.showSeparator();
             try {
-                handleCommand(command, tasks, ui);
+                handleCommand(command, tasks, ui, storage);
             } catch (HabpyDuckException e) {
                 ui.showError(e.getMessage());
             }
@@ -44,20 +39,22 @@ public class HabpyDuck {
      * @param command the command entered by the user
      * @param tasks the list that stores all tasks
      * @param ui the UI used to show command results
+     * @param storage the storage used to save and load tasks
      * @throws HabpyDuckException if the command is invalid
      */
-    private static void handleCommand(String command, ArrayList<Task> tasks, Ui ui) throws HabpyDuckException {
+    private static void handleCommand(String command, ArrayList<Task> tasks, Ui ui, Storage storage)
+            throws HabpyDuckException {
         switch (getCommandType(command)) {
         case LIST:
             tasks.clear();
-            tasks.addAll(loadTasks(true, ui));
+            tasks.addAll(storage.loadTasks(true, ui));
             ui.showTaskList(tasks);
             break;
         case MARK:
             int taskIndex = parseTaskIndex(command, "mark", tasks.size());
             tasks.get(taskIndex).markAsDone();
             try {
-                saveTasks(tasks);
+                storage.saveTasks(tasks);
             } catch (HabpyDuckException e) {
                 tasks.get(taskIndex).markAsNotDone();
                 throw e;
@@ -68,7 +65,7 @@ public class HabpyDuck {
             int unmarkTaskIndex = parseTaskIndex(command, "unmark", tasks.size());
             tasks.get(unmarkTaskIndex).markAsNotDone();
             try {
-                saveTasks(tasks);
+                storage.saveTasks(tasks);
             } catch (HabpyDuckException e) {
                 tasks.get(unmarkTaskIndex).markAsDone();
                 throw e;
@@ -79,7 +76,7 @@ public class HabpyDuck {
             int deleteTaskIndex = parseTaskIndex(command, "delete", tasks.size());
             Task removedTask = tasks.remove(deleteTaskIndex);
             try {
-                saveTasks(tasks);
+                storage.saveTasks(tasks);
             } catch (HabpyDuckException e) {
                 tasks.add(deleteTaskIndex, removedTask);
                 throw e;
@@ -89,13 +86,14 @@ public class HabpyDuck {
         case TODO:
             String description = command.length() > 4 ? command.substring(5).trim() : "";
             addTask(new Todo(requireText(description,
-                    "OH NO!!! A todo needs a description, friend. Try something like: todo read book")), tasks, ui);
+                    "OH NO!!! A todo needs a description, friend. Try something like: todo read book")),
+                    tasks, ui, storage);
             break;
         case DEADLINE:
-            addDeadline(command, tasks, ui);
+            addDeadline(command, tasks, ui, storage);
             break;
         case EVENT:
-            addEvent(command, tasks, ui);
+            addEvent(command, tasks, ui, storage);
             break;
         case UNKNOWN:
             if (command.isBlank()) {
@@ -125,9 +123,11 @@ public class HabpyDuck {
      * @param command the full deadline command
      * @param tasks the list that stores all tasks
      * @param ui the UI used to show command results
+     * @param storage the storage used to save tasks
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static void addDeadline(String command, ArrayList<Task> tasks, Ui ui) throws HabpyDuckException {
+    private static void addDeadline(String command, ArrayList<Task> tasks, Ui ui, Storage storage)
+            throws HabpyDuckException {
         String taskDetails = command.length() > 8 ? command.substring(9) : "";
         int byIndex = taskDetails.indexOf(" /by ");
         if (byIndex == -1) {
@@ -139,7 +139,7 @@ public class HabpyDuck {
                 "OH NO!!! A deadline needs a description, friend. Try again!");
         String by = requireText(taskDetails.substring(byIndex + 5).trim(),
                 "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
-        addTask(new Deadline(description, parseUserDeadlineDateTime(by)), tasks, ui);
+        addTask(new Deadline(description, parseUserDeadlineDateTime(by)), tasks, ui, storage);
     }
 
     /**
@@ -148,9 +148,11 @@ public class HabpyDuck {
      * @param command the full event command
      * @param tasks the list that stores all tasks
      * @param ui the UI used to show command results
+     * @param storage the storage used to save tasks
      * @throws HabpyDuckException if the command is missing required parts
      */
-    private static void addEvent(String command, ArrayList<Task> tasks, Ui ui) throws HabpyDuckException {
+    private static void addEvent(String command, ArrayList<Task> tasks, Ui ui, Storage storage)
+            throws HabpyDuckException {
         String taskDetails = command.length() > 5 ? command.substring(6) : "";
         int fromIndex = taskDetails.indexOf(" /from ");
         int toIndex = taskDetails.indexOf(" /to ", fromIndex + 7);
@@ -165,7 +167,7 @@ public class HabpyDuck {
                 "OH NO!!! An event needs a start time, friend. Try again!");
         String to = requireText(taskDetails.substring(toIndex + 5).trim(),
                 "OH NO!!! An event needs an end time, friend. Try again!");
-        addTask(new Event(description, from, to), tasks, ui);
+        addTask(new Event(description, from, to), tasks, ui, storage);
     }
 
     /**
@@ -174,114 +176,17 @@ public class HabpyDuck {
      * @param task the task to add
      * @param tasks the list that stores all tasks
      * @param ui the UI used to show command results
+     * @param storage the storage used to save tasks
      */
-    private static void addTask(Task task, ArrayList<Task> tasks, Ui ui) throws HabpyDuckException {
+    private static void addTask(Task task, ArrayList<Task> tasks, Ui ui, Storage storage) throws HabpyDuckException {
         tasks.add(task);
         try {
-            saveTasks(tasks);
+            storage.saveTasks(tasks);
         } catch (HabpyDuckException e) {
             tasks.remove(tasks.size() - 1);
             throw e;
         }
         ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-    }
-
-    /**
-     * Saves the current tasks to disk, replacing the old file contents.
-     *
-     * @param tasks the list of tasks to save
-     * @throws HabpyDuckException if the file cannot be written
-     */
-    private static void saveTasks(ArrayList<Task> tasks) throws HabpyDuckException {
-        try {
-            Files.createDirectories(SAVE_FILE_PATH.getParent());
-            ArrayList<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(task.toFileString());
-            }
-            Files.write(SAVE_FILE_PATH, lines, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new HabpyDuckException("OH NO!!! I could not save your tasks to " + SAVE_FILE_PATH + ".");
-        }
-    }
-
-    /**
-     * Loads saved tasks from disk when the chatbot starts.
-     *
-     * @param shouldShowWarnings whether to print warnings for malformed saved tasks
-     * @param ui the UI used to show loading warnings
-     * @return the tasks stored in the save file, or an empty list if there is no save file yet
-     */
-    private static ArrayList<Task> loadTasks(boolean shouldShowWarnings, Ui ui) {
-        ArrayList<Task> tasks = new ArrayList<>();
-        if (!Files.exists(SAVE_FILE_PATH)) {
-            return tasks;
-        }
-
-        try {
-            ArrayList<String> lines = new ArrayList<>(Files.readAllLines(SAVE_FILE_PATH, StandardCharsets.UTF_8));
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                if (line.isBlank()) {
-                    continue;
-                }
-
-                try {
-                    tasks.add(parseTaskFromFile(line));
-                } catch (HabpyDuckException e) {
-                    if (shouldShowWarnings && ui != null) {
-                        ui.showError("OH NO!!! I had trouble loading saved task on line "
-                                + (i + 1) + ": " + e.getMessage());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            if (shouldShowWarnings && ui != null) {
-                ui.showError("OH NO!!! I could not load tasks from " + SAVE_FILE_PATH + ".");
-            }
-        }
-        return tasks;
-    }
-
-    /**
-     * Loads saved tasks without printing warnings.
-     *
-     * @return the tasks stored in the save file, or an empty list if there is no save file yet
-     */
-    private static ArrayList<Task> loadTasks() {
-        return loadTasks(false, null);
-    }
-
-    /**
-     * Converts one saved text line back into a task object.
-     *
-     * @param line one line from the save file
-     * @return the task represented by that line
-     * @throws HabpyDuckException if the saved line is not in the expected format
-     */
-    private static Task parseTaskFromFile(String line) throws HabpyDuckException {
-        String[] parts = line.split(" \\| ", -1);
-        validateSavedTaskParts(parts);
-
-        Task task;
-        switch (parts[0]) {
-        case "D":
-            task = new Deadline(unescapeFileField(parts[2]), parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
-            break;
-        case "E":
-            task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]), unescapeFileField(parts[4]));
-            break;
-        case "T":
-            task = new Todo(unescapeFileField(parts[2]));
-            break;
-        default:
-            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
-        }
-
-        if (parts[1].equals("1")) {
-            task.markAsDone();
-        }
-        return task;
     }
 
     /**
@@ -300,113 +205,6 @@ public class HabpyDuck {
         }
     }
 
-    /**
-     * Converts deadline text from the save file into a LocalDateTime.
-     *
-     * @param dateTimeText the saved date and time text
-     * @return the parsed date and time
-     * @throws HabpyDuckException if the saved value is not an ISO date or date-time
-     */
-    private static LocalDateTime parseSavedDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
-        try {
-            return LocalDateTime.parse(dateTimeText);
-        } catch (DateTimeParseException dateTimeError) {
-            try {
-                return LocalDate.parse(dateTimeText).atStartOfDay();
-            } catch (DateTimeParseException dateError) {
-                throw new HabpyDuckException("saved deadline date and time must use yyyy-MM-ddTHH:mm format");
-            }
-        }
-    }
-
-    /**
-     * Checks that a saved task line has a known type, valid done status, and correct number of fields.
-     *
-     * @param parts the saved line split into fields
-     * @throws HabpyDuckException if the saved line is malformed
-     */
-    private static void validateSavedTaskParts(String[] parts) throws HabpyDuckException {
-        if (parts.length < 2) {
-            throw new HabpyDuckException("missing task type or status");
-        }
-        if (!parts[1].equals("0") && !parts[1].equals("1")) {
-            throw new HabpyDuckException("status must be 0 or 1");
-        }
-
-        int expectedPartCount;
-        switch (parts[0]) {
-        case "T":
-            expectedPartCount = 3;
-            break;
-        case "D":
-            expectedPartCount = 4;
-            break;
-        case "E":
-            expectedPartCount = 5;
-            break;
-        default:
-            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
-        }
-        if (parts.length != expectedPartCount) {
-            throw new HabpyDuckException("expected " + expectedPartCount + " fields but found " + parts.length);
-        }
-        for (int i = 2; i < parts.length; i++) {
-            if (unescapeFileField(parts[i]).isBlank()) {
-                throw new HabpyDuckException("task details cannot be empty");
-            }
-        }
-    }
-
-    /**
-     * Escapes special characters so user text can be stored safely on one line.
-     *
-     * @param field the task text to save
-     * @return the escaped text
-     */
-    public static String escapeFileField(String field) {
-        return field.replace("\\", "\\\\")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("|", "\\|");
-    }
-
-    /**
-     * Restores special characters that were escaped for the save file.
-     *
-     * @param field the saved text to restore
-     * @return the unescaped text
-     */
-    private static String unescapeFileField(String field) {
-        StringBuilder result = new StringBuilder();
-        boolean isEscaping = false;
-        for (int i = 0; i < field.length(); i++) {
-            char character = field.charAt(i);
-            if (!isEscaping && character == '\\') {
-                isEscaping = true;
-                continue;
-            }
-            if (isEscaping) {
-                switch (character) {
-                case 'n':
-                    result.append('\n');
-                    break;
-                case 'r':
-                    result.append('\r');
-                    break;
-                default:
-                    result.append(character);
-                    break;
-                }
-                isEscaping = false;
-                continue;
-            }
-            result.append(character);
-        }
-        if (isEscaping) {
-            result.append('\\');
-        }
-        return result.toString();
-    }
 
     /**
      * Converts a user-facing task number into an array index.
