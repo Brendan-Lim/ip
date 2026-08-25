@@ -18,7 +18,7 @@ public class Todo extends Task {
      */
     @Override
     public String toFileString() {
-        return "T | " + getDoneStatus() + " | " + description;
+        return "T | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description);
     }
 
     /**

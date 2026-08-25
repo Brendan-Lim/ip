@@ -25,7 +25,8 @@ public class Event extends Task {
      */
     @Override
     public String toFileString() {
-        return "E | " + getDoneStatus() + " | " + description + " | " + from + " | " + to;
+        return "E | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description)
+                + " | " + HabpyDuck.escapeFileField(from) + " | " + HabpyDuck.escapeFileField(to);
     }
 
     /**

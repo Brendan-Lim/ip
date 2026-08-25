@@ -53,7 +53,7 @@ public class Task {
      * @return a line of text that can be written to the save file
      */
     public String toFileString() {
-        return "T | " + getDoneStatus() + " | " + description;
+        return "T | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description);
     }
 
     /**

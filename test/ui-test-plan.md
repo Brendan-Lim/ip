@@ -140,6 +140,150 @@ E | 1 | project meeting | Aug 6th 2pm | 4pm
 T | 0 | join sports club
 ```
 
+## Test Case: malformed saved tasks are skipped
+
+### Aim
+
+Verify that malformed saved task lines are reported and skipped, while valid saved tasks still load.
+
+### Initial saved file content
+
+```text
+T | 1 | read book
+D | 2 | bad status | tomorrow
+X | 0 | bad type
+D | 0 | missing date
+E | 1 | project \| meeting | C:\\start | 4\|5pm
+T | 0 |    
+```
+
+### Inputs
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+Skipping saved task on line 2: status must be 0 or 1
+Skipping saved task on line 3: unknown task type 'X'
+Skipping saved task on line 4: expected 4 fields but found 3
+Skipping saved task on line 6: task details cannot be empty
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[E][X] project | meeting (from: C:\start to: 4|5pm)
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case: special file characters are escaped when saved
+
+### Aim
+
+Verify that task text containing pipes and backslashes can be saved without breaking the file format.
+
+### Inputs
+
+```text
+todo read | book
+deadline path \ home /by Aug | 6
+event sync | call /from room \A /to 4 | 5pm
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read | book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] path \ home (by: Aug | 6)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] sync | call (from: room \A to: 4 | 5pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read | book
+2.[D][ ] path \ home (by: Aug | 6)
+3.[E][ ] sync | call (from: room \A to: 4 | 5pm)
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Expected saved file content
+
+```text
+T | 0 | read \| book
+D | 0 | path \\ home | Aug \| 6
+E | 0 | sync \| call | room \\A | 4 \| 5pm
+```
+
+## Test Case: empty input exits cleanly
+
+### Aim
+
+Verify that the chatbot does not crash if standard input ends before the user enters bye.
+
+### Inputs
+
+```text
+
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Test Case: delete removes a task and preserves remaining state
 
 ### Aim

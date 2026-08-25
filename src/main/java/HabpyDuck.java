@@ -28,8 +28,12 @@ public class HabpyDuck {
 
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = loadTasks();
-        String command = scanner.nextLine();
-        while (getCommandType(command) != CommandType.BYE) {
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
+            if (getCommandType(command) == CommandType.BYE) {
+                break;
+            }
+
             System.out.println(SEPARATOR);
             try {
                 handleCommand(command, tasks);
@@ -37,7 +41,6 @@ public class HabpyDuck {
                 System.out.println(e.getMessage());
             }
             System.out.println(SEPARATOR);
-            command = scanner.nextLine();
         }
 
         System.out.println(SEPARATOR);
@@ -60,21 +63,36 @@ public class HabpyDuck {
         case MARK:
             int taskIndex = parseTaskIndex(command, "mark", tasks.size());
             tasks.get(taskIndex).markAsDone();
-            saveTasks(tasks);
+            try {
+                saveTasks(tasks);
+            } catch (HabpyDuckException e) {
+                tasks.get(taskIndex).markAsNotDone();
+                throw e;
+            }
             System.out.println("YAY GOOD JOB!!! I've marked this task as done:");
             System.out.println("  " + tasks.get(taskIndex));
             break;
         case UNMARK:
             int unmarkTaskIndex = parseTaskIndex(command, "unmark", tasks.size());
             tasks.get(unmarkTaskIndex).markAsNotDone();
-            saveTasks(tasks);
+            try {
+                saveTasks(tasks);
+            } catch (HabpyDuckException e) {
+                tasks.get(unmarkTaskIndex).markAsDone();
+                throw e;
+            }
             System.out.println("OK, I've marked this task as not done yet, all the best friend:");
             System.out.println("  " + tasks.get(unmarkTaskIndex));
             break;
         case DELETE:
             int deleteTaskIndex = parseTaskIndex(command, "delete", tasks.size());
             Task removedTask = tasks.remove(deleteTaskIndex);
-            saveTasks(tasks);
+            try {
+                saveTasks(tasks);
+            } catch (HabpyDuckException e) {
+                tasks.add(deleteTaskIndex, removedTask);
+                throw e;
+            }
             System.out.println("Noted. I've removed this task:");
             System.out.println("  " + removedTask);
             System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -176,7 +194,12 @@ public class HabpyDuck {
      */
     private static void addTask(Task task, ArrayList<Task> tasks) throws HabpyDuckException {
         tasks.add(task);
-        saveTasks(tasks);
+        try {
+            saveTasks(tasks);
+        } catch (HabpyDuckException e) {
+            tasks.remove(tasks.size() - 1);
+            throw e;
+        }
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks.get(tasks.size() - 1));
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -213,8 +236,18 @@ public class HabpyDuck {
         }
 
         try {
-            for (String line : Files.readAllLines(SAVE_FILE_PATH, StandardCharsets.UTF_8)) {
-                tasks.add(parseTaskFromFile(line));
+            ArrayList<String> lines = new ArrayList<>(Files.readAllLines(SAVE_FILE_PATH, StandardCharsets.UTF_8));
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                if (line.isBlank()) {
+                    continue;
+                }
+
+                try {
+                    tasks.add(parseTaskFromFile(line));
+                } catch (HabpyDuckException e) {
+                    System.out.println("Skipping saved task on line " + (i + 1) + ": " + e.getMessage());
+                }
             }
         } catch (IOException e) {
             System.out.println("Could not load tasks from " + SAVE_FILE_PATH + ".");
@@ -227,27 +260,120 @@ public class HabpyDuck {
      *
      * @param line one line from the save file
      * @return the task represented by that line
+     * @throws HabpyDuckException if the saved line is not in the expected format
      */
-    private static Task parseTaskFromFile(String line) {
+    private static Task parseTaskFromFile(String line) throws HabpyDuckException {
         String[] parts = line.split(" \\| ", -1);
+        validateSavedTaskParts(parts);
+
         Task task;
         switch (parts[0]) {
         case "D":
-            task = new Deadline(parts[2], parts[3]);
+            task = new Deadline(unescapeFileField(parts[2]), unescapeFileField(parts[3]));
             break;
         case "E":
-            task = new Event(parts[2], parts[3], parts[4]);
+            task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]), unescapeFileField(parts[4]));
             break;
         case "T":
-        default:
-            task = new Todo(parts[2]);
+            task = new Todo(unescapeFileField(parts[2]));
             break;
+        default:
+            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
         }
 
         if (parts[1].equals("1")) {
             task.markAsDone();
         }
         return task;
+    }
+
+    /**
+     * Checks that a saved task line has a known type, valid done status, and correct number of fields.
+     *
+     * @param parts the saved line split into fields
+     * @throws HabpyDuckException if the saved line is malformed
+     */
+    private static void validateSavedTaskParts(String[] parts) throws HabpyDuckException {
+        if (parts.length < 2) {
+            throw new HabpyDuckException("missing task type or status");
+        }
+        if (!parts[1].equals("0") && !parts[1].equals("1")) {
+            throw new HabpyDuckException("status must be 0 or 1");
+        }
+
+        int expectedPartCount;
+        switch (parts[0]) {
+        case "T":
+            expectedPartCount = 3;
+            break;
+        case "D":
+            expectedPartCount = 4;
+            break;
+        case "E":
+            expectedPartCount = 5;
+            break;
+        default:
+            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
+        }
+        if (parts.length != expectedPartCount) {
+            throw new HabpyDuckException("expected " + expectedPartCount + " fields but found " + parts.length);
+        }
+        for (int i = 2; i < parts.length; i++) {
+            if (unescapeFileField(parts[i]).isBlank()) {
+                throw new HabpyDuckException("task details cannot be empty");
+            }
+        }
+    }
+
+    /**
+     * Escapes special characters so user text can be stored safely on one line.
+     *
+     * @param field the task text to save
+     * @return the escaped text
+     */
+    public static String escapeFileField(String field) {
+        return field.replace("\\", "\\\\")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("|", "\\|");
+    }
+
+    /**
+     * Restores special characters that were escaped for the save file.
+     *
+     * @param field the saved text to restore
+     * @return the unescaped text
+     */
+    private static String unescapeFileField(String field) {
+        StringBuilder result = new StringBuilder();
+        boolean isEscaping = false;
+        for (int i = 0; i < field.length(); i++) {
+            char character = field.charAt(i);
+            if (!isEscaping && character == '\\') {
+                isEscaping = true;
+                continue;
+            }
+            if (isEscaping) {
+                switch (character) {
+                case 'n':
+                    result.append('\n');
+                    break;
+                case 'r':
+                    result.append('\r');
+                    break;
+                default:
+                    result.append(character);
+                    break;
+                }
+                isEscaping = false;
+                continue;
+            }
+            result.append(character);
+        }
+        if (isEscaping) {
+            result.append('\\');
+        }
+        return result.toString();
     }
 
     /**

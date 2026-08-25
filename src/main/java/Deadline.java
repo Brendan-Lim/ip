@@ -22,7 +22,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileString() {
-        return "D | " + getDoneStatus() + " | " + description + " | " + by;
+        return "D | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description)
+                + " | " + HabpyDuck.escapeFileField(by);
     }
 
     /**
