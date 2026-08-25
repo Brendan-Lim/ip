@@ -10,7 +10,7 @@ Verify that the chatbot can add todos, deadlines, and events; list them with typ
 
 ```text
 todo read book
-deadline return book /by Sunday
+deadline return book /by 25/8/2026 1800
 event project meeting /from Mon 2pm /to 4pm
 mark 1
 list
@@ -39,7 +39,7 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Aug 25 2026, 6:00pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -54,7 +54,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -64,7 +64,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -82,7 +82,7 @@ Verify that the chatbot loads todo, deadline, and event tasks from the saved fil
 
 ```text
 T | 1 | read book
-D | 0 | return book | June 6th
+D | 0 | return book | 2019-06-06T09:00
 E | 1 | project meeting | Aug 6th 2pm | 4pm
 ```
 
@@ -111,7 +111,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
+2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -122,7 +122,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
+2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
 4.[T][ ] join sports club
 ____________________________________________________________
@@ -135,7 +135,7 @@ ____________________________________________________________
 
 ```text
 T | 1 | read book
-D | 0 | return book | June 6th
+D | 0 | return book | 2019-06-06T09:00
 E | 1 | project meeting | Aug 6th 2pm | 4pm
 T | 0 | join sports club
 ```
@@ -153,6 +153,7 @@ T | 1 | read book
 D | 2 | bad status | tomorrow
 X | 0 | bad type
 D | 0 | missing date
+D | 0 | invalid date | tomorrow
 E | 1 | project \| meeting | C:\\start | 4\|5pm
 T | 0 |    
 ```
@@ -177,11 +178,12 @@ ____________________________________________________________
 Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
-Skipping saved task on line 2: status must be 0 or 1
-Skipping saved task on line 3: unknown task type 'X'
-Skipping saved task on line 4: expected 4 fields but found 3
-Skipping saved task on line 6: task details cannot be empty
 ____________________________________________________________
+OH NO!!! I had trouble loading saved task on line 2: status must be 0 or 1
+OH NO!!! I had trouble loading saved task on line 3: unknown task type 'X'
+OH NO!!! I had trouble loading saved task on line 4: expected 4 fields but found 3
+OH NO!!! I had trouble loading saved task on line 5: saved deadline date and time must use yyyy-MM-ddTHH:mm format
+OH NO!!! I had trouble loading saved task on line 7: task details cannot be empty
 Here are the tasks in your list:
 1.[T][X] read book
 2.[E][X] project | meeting (from: C:\start to: 4|5pm)
@@ -201,7 +203,7 @@ Verify that task text containing pipes and backslashes can be saved without brea
 
 ```text
 todo read | book
-deadline path \ home /by Aug | 6
+deadline path \ home /by 8/8/2026 0830
 event sync | call /from room \A /to 4 | 5pm
 list
 bye
@@ -227,7 +229,7 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] path \ home (by: Aug | 6)
+  [D][ ] path \ home (by: Aug 8 2026, 8:30am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -238,7 +240,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read | book
-2.[D][ ] path \ home (by: Aug | 6)
+2.[D][ ] path \ home (by: Aug 8 2026, 8:30am)
 3.[E][ ] sync | call (from: room \A to: 4 | 5pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -250,7 +252,7 @@ ____________________________________________________________
 
 ```text
 T | 0 | read \| book
-D | 0 | path \\ home | Aug \| 6
+D | 0 | path \\ home | 2026-08-08T08:30
 E | 0 | sync \| call | room \\A | 4 \| 5pm
 ```
 
@@ -294,7 +296,7 @@ Verify that deleting a middle task removes only that task, renumbers the remaini
 
 ```text
 todo read book
-deadline return book /by June 6th
+deadline return book /by 6/6/2019 0900
 event project meeting /from Aug 6th 2pm /to 4pm
 todo join sports club
 mark 1
@@ -330,7 +332,7 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: June 6th)
+  [D][ ] return book (by: Jun 6 2019, 9:00am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -349,7 +351,7 @@ YAY GOOD JOB!!! I've marked this task as done:
 ____________________________________________________________
 ____________________________________________________________
 YAY GOOD JOB!!! I've marked this task as done:
-  [D][X] return book (by: June 6th)
+  [D][X] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________
 ____________________________________________________________
 YAY GOOD JOB!!! I've marked this task as done:
@@ -358,7 +360,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][X] return book (by: June 6th)
+2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
 4.[T][X] join sports club
 ____________________________________________________________
@@ -370,22 +372,22 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][X] return book (by: June 6th)
+2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task to delete, like: delete 2
+OH NO!!! Please tell me which task to delete, like: delete 2
 ____________________________________________________________
 ____________________________________________________________
-Please use a number after delete, like: delete 2
+OH NO!!! Please use a number after delete, like: delete 2
 ____________________________________________________________
 ____________________________________________________________
-Task 9 does not exist in your list.
+OH NO!!! Task 9 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][X] return book (by: June 6th)
+2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
@@ -397,7 +399,7 @@ ____________________________________________________________
 
 ```text
 T | 1 | read book
-D | 1 | return book | June 6th
+D | 1 | return book | 2019-06-06T09:00
 T | 1 | join sports club
 ```
 
@@ -415,7 +417,7 @@ todo alpha
 todo
 blah
 list
-deadline beta /by Friday
+deadline beta /by 13/12/2019 2359
 event gamma /from 1pm /to 2pm
 event delta /from 3pm
 mark 2
@@ -448,7 +450,7 @@ Got it. I've added this task:
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-The description of a todo cannot be empty.
+OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
@@ -459,7 +461,7 @@ Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] beta (by: Friday)
+  [D][ ] beta (by: Dec 13 2019, 11:59pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -468,26 +470,26 @@ Got it. I've added this task:
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: event DESCRIPTION /from START /to END :)
+OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)
 ____________________________________________________________
 ____________________________________________________________
 YAY GOOD JOB!!! I've marked this task as done:
-  [D][X] beta (by: Friday)
+  [D][X] beta (by: Dec 13 2019, 11:59pm)
 ____________________________________________________________
 ____________________________________________________________
-Task 99 does not exist in your list.
+OH NO!!! Task 99 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
-Please use a number after unmark, like: unmark 2
+OH NO!!! Please use a number after unmark, like: unmark 2
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet, all the best friend:
-  [D][ ] beta (by: Friday)
+  [D][ ] beta (by: Dec 13 2019, 11:59pm)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] alpha
-2.[D][ ] beta (by: Friday)
+2.[D][ ] beta (by: Dec 13 2019, 11:59pm)
 3.[E][ ] gamma (from: 1pm to: 2pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -513,7 +515,7 @@ unmark 1
 mark 0
 mark -1
 mark 1
-deadline do homework /by no idea :-p
+deadline do homework /by 4/10/2019 1200
 event orientation week /from 4/10/2019 /to 11/10/2019
 list
 bye
@@ -533,16 +535,16 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Please enter a command.
+OH NO!!! I didn't catch a command, friend. Please type something for me.
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: deadline DESCRIPTION /by WHEN :)
+OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: event DESCRIPTION /from START /to END :)
+OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task to unmark, like: unmark 2
+OH NO!!! Please tell me which task to unmark, like: unmark 2
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -554,10 +556,10 @@ OK, I've marked this task as not done yet, all the best friend:
   [T][ ] keep notes
 ____________________________________________________________
 ____________________________________________________________
-Task 0 does not exist in your list.
+OH NO!!! Task 0 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
-Task -1 does not exist in your list.
+OH NO!!! Task -1 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
 YAY GOOD JOB!!! I've marked this task as done:
@@ -565,7 +567,7 @@ YAY GOOD JOB!!! I've marked this task as done:
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] do homework (by: no idea :-p)
+  [D][ ] do homework (by: Oct 4 2019, 12:00pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -576,7 +578,7 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] keep notes
-2.[D][ ] do homework (by: no idea :-p)
+2.[D][ ] do homework (by: Oct 4 2019, 12:00pm)
 3.[E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
 ____________________________________________________________
 ____________________________________________________________
@@ -600,7 +602,8 @@ mark abc
 mark 1
 deadline return book
 deadline /by Sunday
-deadline return book /by Sunday
+deadline return book /by 2019-10-15
+deadline return book /by 25/8/2026 1800
 event meeting /from Mon 2pm
 event meeting /from Mon 2pm /to 4pm
 list
@@ -621,33 +624,36 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-The description of a todo cannot be empty.
+OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task to mark, like: mark 2
+OH NO!!! Please tell me which task to mark, like: mark 2
 ____________________________________________________________
 ____________________________________________________________
-Please use a number after mark, like: mark 2
+OH NO!!! Please use a number after mark, like: mark 2
 ____________________________________________________________
 ____________________________________________________________
-Task 1 does not exist in your list.
+OH NO!!! Task 1 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: deadline DESCRIPTION /by WHEN :)
+OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: deadline DESCRIPTION /by WHEN :)
+OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)
+____________________________________________________________
+____________________________________________________________
+OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Aug 25 2026, 6:00pm)
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Please use this format: event DESCRIPTION /from START /to END :)
+OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -656,7 +662,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1.[D][ ] return book (by: Sunday)
+1.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________

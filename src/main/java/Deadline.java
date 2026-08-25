@@ -1,16 +1,23 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 /**
  * Represents a task that needs to be done before a specific date or time.
  */
 public class Deadline extends Task {
-    protected String by;
+    private static final DateTimeFormatter DISPLAY_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MMM d yyyy, h:mma", Locale.ENGLISH);
+
+    protected LocalDateTime by;
 
     /**
      * Creates a deadline task with the given description and deadline.
      *
      * @param description the text that describes the task
-     * @param by the date or time by which the task should be done
+     * @param by the date and time by which the task should be done
      */
-    public Deadline(String description, String by) {
+    public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }
@@ -23,7 +30,7 @@ public class Deadline extends Task {
     @Override
     public String toFileString() {
         return "D | " + getDoneStatus() + " | " + HabpyDuck.escapeFileField(description)
-                + " | " + HabpyDuck.escapeFileField(by);
+                + " | " + by;
     }
 
     /**
@@ -33,6 +40,9 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        String formattedDateTime = by.format(DISPLAY_DATE_FORMAT)
+                .replace("AM", "am")
+                .replace("PM", "pm");
+        return "[D]" + super.toString() + " (by: " + formattedDateTime + ")";
     }
 }
