@@ -26,6 +26,7 @@ class TestCase:
     aim: str
     inputs: str
     expected_output: str
+    initial_file_content: str | None = None
     expected_file_content: str | None = None
 
 
@@ -77,8 +78,11 @@ def read_test_plan() -> list[TestCase]:
         expected_output = extract_code_block(
             extract_section(body, "Expected output"), "Expected output"
         )
+        initial_file_content = extract_optional_code_block(body, "Initial saved file content")
         expected_file_content = extract_optional_code_block(body, "Expected saved file content")
-        cases.append(TestCase(name, aim, inputs, expected_output, expected_file_content))
+        cases.append(
+            TestCase(name, aim, inputs, expected_output, initial_file_content, expected_file_content)
+        )
 
     if not cases:
         raise ValueError("No test cases found. Use '## Test Case: <name>' headings.")
@@ -93,14 +97,17 @@ def compile_program() -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
 
-def run_program(inputs: str) -> str:
+def run_program(case: TestCase) -> str:
     """Run the console program once with the given input transcript."""
     if SAVE_FILE.exists():
         SAVE_FILE.unlink()
+    if case.initial_file_content is not None:
+        SAVE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        SAVE_FILE.write_text(case.initial_file_content + "\n", encoding="utf-8")
     process = subprocess.run(
         ["java", "-cp", str(CLASS_DIR), MAIN_CLASS],
         cwd=ROOT,
-        input=inputs,
+        input=case.inputs,
         text=True,
         capture_output=True,
         check=False,
@@ -137,7 +144,7 @@ def main() -> int:
         return 1
 
     for index, case in enumerate(cases, start=1):
-        actual_output = run_program(case.inputs)
+        actual_output = run_program(case)
         if normalize(actual_output) != normalize(case.expected_output):
             print(f"FAILED test {index}: {case.name}")
             print(f"Aim: {case.aim}")

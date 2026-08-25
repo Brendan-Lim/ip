@@ -72,6 +72,74 @@ Bye friend. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+## Test Case: saved tasks load on startup
+
+### Aim
+
+Verify that the chatbot loads todo, deadline, and event tasks from the saved file when it starts, including their done statuses.
+
+### Initial saved file content
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 1 | project meeting | Aug 6th 2pm | 4pm
+```
+
+### Inputs
+
+```text
+list
+todo join sports club
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: June 6th)
+3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] join sports club
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: June 6th)
+3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
+4.[T][ ] join sports club
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Expected saved file content
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 1 | project meeting | Aug 6th 2pm | 4pm
+T | 0 | join sports club
+```
+
 ## Test Case: delete removes a task and preserves remaining state
 
 ### Aim

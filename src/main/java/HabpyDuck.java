@@ -27,7 +27,7 @@ public class HabpyDuck {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
         String command = scanner.nextLine();
         while (getCommandType(command) != CommandType.BYE) {
             System.out.println(SEPARATOR);
@@ -199,6 +199,55 @@ public class HabpyDuck {
         } catch (IOException e) {
             throw new HabpyDuckException("Could not save tasks to " + SAVE_FILE_PATH + ".");
         }
+    }
+
+    /**
+     * Loads saved tasks from disk when the chatbot starts.
+     *
+     * @return the tasks stored in the save file, or an empty list if there is no save file yet
+     */
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        if (!Files.exists(SAVE_FILE_PATH)) {
+            return tasks;
+        }
+
+        try {
+            for (String line : Files.readAllLines(SAVE_FILE_PATH, StandardCharsets.UTF_8)) {
+                tasks.add(parseTaskFromFile(line));
+            }
+        } catch (IOException e) {
+            System.out.println("Could not load tasks from " + SAVE_FILE_PATH + ".");
+        }
+        return tasks;
+    }
+
+    /**
+     * Converts one saved text line back into a task object.
+     *
+     * @param line one line from the save file
+     * @return the task represented by that line
+     */
+    private static Task parseTaskFromFile(String line) {
+        String[] parts = line.split(" \\| ", -1);
+        Task task;
+        switch (parts[0]) {
+        case "D":
+            task = new Deadline(parts[2], parts[3]);
+            break;
+        case "E":
+            task = new Event(parts[2], parts[3], parts[4]);
+            break;
+        case "T":
+        default:
+            task = new Todo(parts[2]);
+            break;
+        }
+
+        if (parts[1].equals("1")) {
+            task.markAsDone();
+        }
+        return task;
     }
 
     /**
