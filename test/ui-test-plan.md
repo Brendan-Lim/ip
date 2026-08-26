@@ -453,7 +453,7 @@ ____________________________________________________________
 OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, or find!
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -627,7 +627,7 @@ ____________________________________________________________
 OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, or find!
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Please tell me which task to mark, like: mark 2
@@ -664,6 +664,83 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case: find tasks by keyword
+
+### Aim
+
+Verify that the chatbot can find tasks whose descriptions contain a keyword, including case-insensitive matches, no matches, and missing keyword errors.
+
+### Inputs
+
+```text
+todo read book
+deadline return book /by 6/6/2019 0900
+todo buy milk
+mark 1
+mark 2
+find book
+find MILK
+find pen
+find
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Jun 6 2019, 9:00am)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] buy milk
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+YAY GOOD JOB!!! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+YAY GOOD JOB!!! I've marked this task as done:
+  [D][X] return book (by: Jun 6 2019, 9:00am)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: Jun 6 2019, 9:00am)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] buy milk
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+____________________________________________________________
+____________________________________________________________
+OH NO!!! Please tell me what keyword to find, like: find book
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!

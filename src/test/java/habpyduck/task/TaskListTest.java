@@ -2,6 +2,7 @@ package habpyduck.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,41 @@ public class TaskListTest {
 
         tasks.markAsNotDone(0);
         assertEquals("[T][ ] read book", tasks.get(0).toString());
+    }
+
+    @Test
+    public void findByKeyword_matchingDescriptions_returnsMatchingTasksInOriginalOrder() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+        tasks.add(new Todo("buy milk"));
+        tasks.add(new Todo("return Book"));
+
+        ArrayList<Task> matchingTasks = tasks.findByKeyword("book");
+
+        assertEquals(2, matchingTasks.size());
+        assertEquals("[T][ ] read book", matchingTasks.get(0).toString());
+        assertEquals("[T][ ] return Book", matchingTasks.get(1).toString());
+    }
+
+    @Test
+    public void findByKeyword_noMatchingDescriptions_returnsEmptyList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+
+        ArrayList<Task> matchingTasks = tasks.findByKeyword("milk");
+
+        assertEquals(0, matchingTasks.size());
+    }
+
+    @Test
+    public void findByKeyword_keywordAppearsOnlyOutsideDescription_returnsEmptyList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Deadline("return item", LocalDateTime.of(2026, 8, 25, 18, 0)));
+        tasks.add(new Event("project meeting", "book room", "4pm"));
+
+        ArrayList<Task> matchingTasks = tasks.findByKeyword("book");
+
+        assertEquals(0, matchingTasks.size());
     }
 
     @Test
