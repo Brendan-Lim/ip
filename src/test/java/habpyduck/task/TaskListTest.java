@@ -42,6 +42,30 @@ public class TaskListTest {
     }
 
     @Test
+    public void findByKeyword_matchingDescriptions_returnsMatchingTasksInOriginalOrder() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+        tasks.add(new Todo("buy milk"));
+        tasks.add(new Todo("return Book"));
+
+        ArrayList<Task> matchingTasks = tasks.findByKeyword("book");
+
+        assertEquals(2, matchingTasks.size());
+        assertEquals("[T][ ] read book", matchingTasks.get(0).toString());
+        assertEquals("[T][ ] return Book", matchingTasks.get(1).toString());
+    }
+
+    @Test
+    public void findByKeyword_noMatchingDescriptions_returnsEmptyList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+
+        ArrayList<Task> matchingTasks = tasks.findByKeyword("milk");
+
+        assertEquals(0, matchingTasks.size());
+    }
+
+    @Test
     public void constructorAndReplaceAll_givenSourceLists_copiesTasksIntoList() {
         ArrayList<Task> initialTasks = new ArrayList<>();
         initialTasks.add(new Todo("initial"));

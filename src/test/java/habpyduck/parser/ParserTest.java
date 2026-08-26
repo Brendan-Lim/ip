@@ -13,6 +13,7 @@ import habpyduck.command.AddCommand;
 import habpyduck.command.Command;
 import habpyduck.command.DeleteCommand;
 import habpyduck.command.ExitCommand;
+import habpyduck.command.FindCommand;
 import habpyduck.command.ListCommand;
 import habpyduck.command.MarkCommand;
 import habpyduck.command.UnmarkCommand;
@@ -30,6 +31,7 @@ public class ParserTest {
         assertEquals(CommandType.MARK, parser.getCommandType("mark 1"));
         assertEquals(CommandType.UNMARK, parser.getCommandType("unmark 1"));
         assertEquals(CommandType.DELETE, parser.getCommandType("delete 1"));
+        assertEquals(CommandType.FIND, parser.getCommandType("find book"));
         assertEquals(CommandType.TODO, parser.getCommandType("todo read book"));
         assertEquals(CommandType.DEADLINE, parser.getCommandType("deadline return book /by 25/8/2026 1800"));
         assertEquals(CommandType.EVENT, parser.getCommandType("event meeting /from 2pm /to 4pm"));
@@ -53,6 +55,7 @@ public class ParserTest {
         assertInstanceOf(MarkCommand.class, parser.parse("mark 1"));
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
+        assertInstanceOf(FindCommand.class, parser.parse("find book"));
         assertInstanceOf(ExitCommand.class, parser.parse("bye"));
     }
 
@@ -80,7 +83,14 @@ public class ParserTest {
     @Test
     public void parse_unknownCommand_exceptionThrown() {
         assertParseExceptionMessage("hello",
-                "OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+                "OH NO!!! I don't understand that command friend :(. "
+                        + "Try todo, deadline, event, list, mark, unmark, delete, or find!");
+    }
+
+    @Test
+    public void parse_findWithoutKeyword_exceptionThrown() {
+        assertParseExceptionMessage("find",
+                "OH NO!!! Please tell me what keyword to find, like: find book");
     }
 
     @Test

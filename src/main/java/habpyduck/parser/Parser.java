@@ -9,6 +9,7 @@ import habpyduck.command.AddCommand;
 import habpyduck.command.Command;
 import habpyduck.command.DeleteCommand;
 import habpyduck.command.ExitCommand;
+import habpyduck.command.FindCommand;
 import habpyduck.command.ListCommand;
 import habpyduck.command.MarkCommand;
 import habpyduck.command.UnmarkCommand;
@@ -51,6 +52,8 @@ public class Parser {
             return new UnmarkCommand(parseTaskNumber(command, "unmark"));
         case DELETE:
             return new DeleteCommand(parseTaskNumber(command, "delete"));
+        case FIND:
+            return new FindCommand(parseFindKeyword(command));
         case TODO:
             return new AddCommand(new Todo(parseTodoDescription(command)));
         case DEADLINE:
@@ -61,11 +64,14 @@ public class Parser {
             return new ExitCommand();
         case UNKNOWN:
             if (command.isBlank()) {
-                throw new HabpyDuckException("OH NO!!! I didn't catch a command, friend. Please type something for me.");
+                throw new HabpyDuckException(
+                        "OH NO!!! I didn't catch a command, friend. Please type something for me.");
             }
-            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. "
+                    + "Try todo, deadline, event, list, mark, unmark, delete, or find!");
         default:
-            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. "
+                    + "Try todo, deadline, event, list, mark, unmark, delete, or find!");
         }
     }
 
@@ -137,6 +143,19 @@ public class Parser {
         String description = command.length() > 4 ? command.substring(5).trim() : "";
         return requireText(description,
                 "OH NO!!! A todo needs a description, friend. Try something like: todo read book");
+    }
+
+    /**
+     * Extracts the keyword from a find command.
+     *
+     * @param command the full find command.
+     * @return the keyword to search for.
+     * @throws HabpyDuckException if the keyword is blank.
+     */
+    private String parseFindKeyword(String command) throws HabpyDuckException {
+        String keyword = command.length() > 4 ? command.substring(5).trim() : "";
+        return requireText(keyword,
+                "OH NO!!! Please tell me what keyword to find, like: find book");
     }
 
     /**
