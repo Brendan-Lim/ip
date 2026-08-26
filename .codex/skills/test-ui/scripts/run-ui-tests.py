@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 TEST_PLAN = ROOT / "test" / "ui-test-plan.md"
 CLASS_DIR = Path("/tmp/habpyduck-ui-test-classes")
-MAIN_CLASS = "HabpyDuck"
+MAIN_CLASS = "habpyduck.HabpyDuck"
 SAVE_DIR = ROOT / "data"
 SAVE_FILE = ROOT / "data" / "habpyduck.txt"
 
@@ -94,7 +94,7 @@ def read_test_plan() -> list[TestCase]:
 def compile_program() -> None:
     """Compile all Java source files used by the console program."""
     CLASS_DIR.mkdir(parents=True, exist_ok=True)
-    sources = sorted((ROOT / "src" / "main" / "java").glob("*.java"))
+    sources = sorted((ROOT / "src" / "main" / "java").rglob("*.java"))
     command = ["javac", "-d", str(CLASS_DIR), *[str(source) for source in sources]]
     subprocess.run(command, cwd=ROOT, check=True)
 
