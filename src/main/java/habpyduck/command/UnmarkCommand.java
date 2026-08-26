@@ -14,7 +14,7 @@ public class UnmarkCommand extends Command {
     /**
      * Creates a command that unmarks the task with the given user-facing number.
      *
-     * @param taskNumber the one-based task number entered by the user
+     * @param taskNumber the one-based task number entered by the user.
      */
     public UnmarkCommand(int taskNumber) {
         this.taskNumber = taskNumber;
@@ -23,10 +23,10 @@ public class UnmarkCommand extends Command {
     /**
      * Marks the task as not done, saves the updated list, and reports the change.
      *
-     * @param tasks the task list to update
-     * @param ui the UI used to show command results
-     * @param storage the storage used to save tasks
-     * @throws HabpyDuckException if the task does not exist or saving fails
+     * @param tasks the task list to update.
+     * @param ui the UI used to show command results.
+     * @param storage the storage used to save tasks.
+     * @throws HabpyDuckException if the task does not exist or saving fails.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws HabpyDuckException {

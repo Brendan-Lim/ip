@@ -11,9 +11,9 @@ public class ExitCommand extends Command {
     /**
      * Does nothing because the farewell message is shown by the main loop.
      *
-     * @param tasks the task list
-     * @param ui the UI
-     * @param storage the storage
+     * @param tasks the task list.
+     * @param ui the UI.
+     * @param storage the storage.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -23,7 +23,7 @@ public class ExitCommand extends Command {
     /**
      * Returns true because this command exits the program.
      *
-     * @return true
+     * @return true.
      */
     @Override
     public boolean isExit() {

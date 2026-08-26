@@ -18,8 +18,8 @@ public class Deadline extends Task {
     /**
      * Creates a deadline task with the given description and deadline.
      *
-     * @param description the text that describes the task
-     * @param by the date and time by which the task should be done
+     * @param description the text that describes the task.
+     * @param by the date and time by which the task should be done.
      */
     public Deadline(String description, LocalDateTime by) {
         super(description);
@@ -29,7 +29,7 @@ public class Deadline extends Task {
     /**
      * Returns this deadline in the simple text format used when saving tasks.
      *
-     * @return a line of text that can be written to the save file
+     * @return a line of text that can be written to the save file.
      */
     @Override
     public String toFileString() {
@@ -40,7 +40,7 @@ public class Deadline extends Task {
     /**
      * Returns the deadline task in the format shown to users.
      *
-     * @return the task type, status icon, description, and deadline
+     * @return the task type, status icon, description, and deadline.
      */
     @Override
     public String toString() {

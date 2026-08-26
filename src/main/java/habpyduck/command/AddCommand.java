@@ -15,7 +15,7 @@ public class AddCommand extends Command {
     /**
      * Creates a command that adds the given task.
      *
-     * @param task the task to add
+     * @param task the task to add.
      */
     public AddCommand(Task task) {
         this.task = task;
@@ -24,10 +24,10 @@ public class AddCommand extends Command {
     /**
      * Adds the task, saves the updated list, and reports the added task.
      *
-     * @param tasks the task list to update
-     * @param ui the UI used to show command results
-     * @param storage the storage used to save tasks
-     * @throws HabpyDuckException if saving fails
+     * @param tasks the task list to update.
+     * @param ui the UI used to show command results.
+     * @param storage the storage used to save tasks.
+     * @throws HabpyDuckException if saving fails.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws HabpyDuckException {

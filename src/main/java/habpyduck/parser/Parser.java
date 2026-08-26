@@ -21,12 +21,14 @@ import habpyduck.task.Todo;
  */
 public class Parser {
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
+            + "Try todo, deadline, event, list, mark, unmark, or delete!";
 
     /**
      * Finds the command type for the user's input.
      *
-     * @param command the full command entered by the user
-     * @return the matching command type
+     * @param command the full command entered by the user.
+     * @return the matching command type.
      */
     public CommandType getCommandType(String command) {
         String trimmedCommand = command.trim();
@@ -37,44 +39,45 @@ public class Parser {
     /**
      * Converts raw user input into a command object that can be executed.
      *
-     * @param command the full command entered by the user
-     * @return the command represented by the input
-     * @throws HabpyDuckException if the command is unknown or missing required details
+     * @param command the full command entered by the user.
+     * @return the command represented by the input.
+     * @throws HabpyDuckException if the command is unknown or missing required details.
      */
     public Command parse(String command) throws HabpyDuckException {
         switch (getCommandType(command)) {
-        case LIST:
-            return new ListCommand();
-        case MARK:
-            return new MarkCommand(parseTaskNumber(command, "mark"));
-        case UNMARK:
-            return new UnmarkCommand(parseTaskNumber(command, "unmark"));
-        case DELETE:
-            return new DeleteCommand(parseTaskNumber(command, "delete"));
-        case TODO:
-            return new AddCommand(new Todo(parseTodoDescription(command)));
-        case DEADLINE:
-            return new AddCommand(parseDeadline(command));
-        case EVENT:
-            return new AddCommand(parseEvent(command));
-        case BYE:
-            return new ExitCommand();
-        case UNKNOWN:
-            if (command.isBlank()) {
-                throw new HabpyDuckException("OH NO!!! I didn't catch a command, friend. Please type something for me.");
-            }
-            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
-        default:
-            throw new HabpyDuckException("OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+            case LIST:
+                return new ListCommand();
+            case MARK:
+                return new MarkCommand(parseTaskNumber(command, "mark"));
+            case UNMARK:
+                return new UnmarkCommand(parseTaskNumber(command, "unmark"));
+            case DELETE:
+                return new DeleteCommand(parseTaskNumber(command, "delete"));
+            case TODO:
+                return new AddCommand(new Todo(parseTodoDescription(command)));
+            case DEADLINE:
+                return new AddCommand(parseDeadline(command));
+            case EVENT:
+                return new AddCommand(parseEvent(command));
+            case BYE:
+                return new ExitCommand();
+            case UNKNOWN:
+                if (command.isBlank()) {
+                    throw new HabpyDuckException(
+                            "OH NO!!! I didn't catch a command, friend. Please type something for me.");
+                }
+                throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
+            default:
+                throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
         }
     }
 
     /**
      * Converts deadline text entered by the user into a LocalDateTime.
      *
-     * @param dateTimeText the date and time entered by the user
-     * @return the parsed date and time
-     * @throws HabpyDuckException if the date and time is not in d/M/yyyy HHmm format
+     * @param dateTimeText the date and time entered by the user.
+     * @return the parsed date and time.
+     * @throws HabpyDuckException if the date and time is not in d/M/yyyy HHmm format.
      */
     public LocalDateTime parseUserDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
         try {
@@ -88,11 +91,11 @@ public class Parser {
     /**
      * Converts a user-facing task number into an array index.
      *
-     * @param command the full mark or unmark command
-     * @param commandWord the command word, such as mark, unmark, or delete
-     * @param taskCount the number of tasks currently stored
-     * @return the zero-based array index of the requested task
-     * @throws HabpyDuckException if the task number is missing or invalid
+     * @param command the full mark or unmark command.
+     * @param commandWord the command word, such as mark, unmark, or delete.
+     * @param taskCount the number of tasks currently stored.
+     * @return the zero-based array index of the requested task.
+     * @throws HabpyDuckException if the task number is missing or invalid.
      */
     public int parseTaskIndex(String command, String commandWord, int taskCount) throws HabpyDuckException {
         int taskNumber = parseTaskNumber(command, commandWord);
@@ -106,10 +109,10 @@ public class Parser {
     /**
      * Converts the task number part of a command into an integer.
      *
-     * @param command the full mark, unmark, or delete command
-     * @param commandWord the command word, such as mark, unmark, or delete
-     * @return the task number entered by the user
-     * @throws HabpyDuckException if the task number is missing or not a number
+     * @param command the full mark, unmark, or delete command.
+     * @param commandWord the command word, such as mark, unmark, or delete.
+     * @return the task number entered by the user.
+     * @throws HabpyDuckException if the task number is missing or not a number.
      */
     private int parseTaskNumber(String command, String commandWord) throws HabpyDuckException {
         String taskNumberText = command.substring(commandWord.length()).trim();
@@ -129,9 +132,9 @@ public class Parser {
     /**
      * Extracts the description from a todo command.
      *
-     * @param command the full todo command
-     * @return the todo description
-     * @throws HabpyDuckException if the description is blank
+     * @param command the full todo command.
+     * @return the todo description.
+     * @throws HabpyDuckException if the description is blank.
      */
     private String parseTodoDescription(String command) throws HabpyDuckException {
         String description = command.length() > 4 ? command.substring(5).trim() : "";
@@ -142,9 +145,9 @@ public class Parser {
     /**
      * Creates a deadline task from a deadline command.
      *
-     * @param command the full deadline command
-     * @return the deadline task represented by the command
-     * @throws HabpyDuckException if the command is missing required parts
+     * @param command the full deadline command.
+     * @return the deadline task represented by the command.
+     * @throws HabpyDuckException if the command is missing required parts.
      */
     private Deadline parseDeadline(String command) throws HabpyDuckException {
         String taskDetails = command.length() > 8 ? command.substring(9) : "";
@@ -164,9 +167,9 @@ public class Parser {
     /**
      * Creates an event task from an event command.
      *
-     * @param command the full event command
-     * @return the event task represented by the command
-     * @throws HabpyDuckException if the command is missing required parts
+     * @param command the full event command.
+     * @return the event task represented by the command.
+     * @throws HabpyDuckException if the command is missing required parts.
      */
     private Event parseEvent(String command) throws HabpyDuckException {
         String taskDetails = command.length() > 5 ? command.substring(6) : "";
@@ -189,10 +192,10 @@ public class Parser {
     /**
      * Checks that a required piece of user input is not blank.
      *
-     * @param text the text to check
-     * @param errorMessage the message to show if the text is blank
-     * @return the text, if it is not blank
-     * @throws HabpyDuckException if the text is blank
+     * @param text the text to check.
+     * @param errorMessage the message to show if the text is blank.
+     * @return the text, if it is not blank.
+     * @throws HabpyDuckException if the text is blank.
      */
     private String requireText(String text, String errorMessage) throws HabpyDuckException {
         if (text.isBlank()) {
