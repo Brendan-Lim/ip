@@ -30,6 +30,10 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 
 ## Testing
 
+Maintain JUnit tests for the top ~50% highest-value methods in the codebase. Prioritize complex, core, or critical business logic over simple getters, setters, and trivial formatting methods.
+
+After each code update, check whether JUnit tests need to be added or updated so the test suite continues to meet the ~50% highest-value method coverage target.
+
 After each code update, check whether `test/ui-test-plan.md` needs to be updated to cover the changed behavior. If it does, update the test plan before running tests.
 
 After each code update, invoke the project-specific `test-ui` skill to run the UI test plan and report the console input/output record. If a UI test fails, stop the test session immediately and report the expected and actual outputs.
