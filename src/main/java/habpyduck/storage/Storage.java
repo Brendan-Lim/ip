@@ -25,8 +25,8 @@ public class Storage {
     /**
      * Creates a storage object that reads from and writes to the given file.
      *
-     * @param firstPathPart the first part of the relative path to the save file
-     * @param otherPathParts the remaining parts of the relative path to the save file
+     * @param firstPathPart the first part of the relative path to the save file.
+     * @param otherPathParts the remaining parts of the relative path to the save file.
      */
     public Storage(String firstPathPart, String... otherPathParts) {
         this.filePath = Path.of(firstPathPart, otherPathParts);
@@ -35,8 +35,8 @@ public class Storage {
     /**
      * Saves the current tasks to disk, replacing the old file contents.
      *
-     * @param tasks the list of tasks to save
-     * @throws HabpyDuckException if the file cannot be written
+     * @param tasks the list of tasks to save.
+     * @throws HabpyDuckException if the file cannot be written.
      */
     public void saveTasks(ArrayList<Task> tasks) throws HabpyDuckException {
         try {
@@ -54,7 +54,7 @@ public class Storage {
     /**
      * Loads saved tasks from disk.
      *
-     * @return the tasks stored in the save file, or an empty list if there is no save file yet
+     * @return the tasks stored in the save file, or an empty list if there is no save file yet.
      */
     public ArrayList<Task> loadTasks() {
         return loadTasks(false, null);
@@ -63,9 +63,9 @@ public class Storage {
     /**
      * Loads saved tasks from disk.
      *
-     * @param shouldShowWarnings whether to print warnings for malformed saved tasks
-     * @param ui the UI used to show loading warnings
-     * @return the tasks stored in the save file, or an empty list if there is no save file yet
+     * @param shouldShowWarnings whether to print warnings for malformed saved tasks.
+     * @param ui the UI used to show loading warnings.
+     * @return the tasks stored in the save file, or an empty list if there is no save file yet.
      */
     public ArrayList<Task> loadTasks(boolean shouldShowWarnings, Ui ui) {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -101,9 +101,9 @@ public class Storage {
     /**
      * Converts one saved text line back into a task object.
      *
-     * @param line one line from the save file
-     * @return the task represented by that line
-     * @throws HabpyDuckException if the saved line is not in the expected format
+     * @param line one line from the save file.
+     * @return the task represented by that line.
+     * @throws HabpyDuckException if the saved line is not in the expected format.
      */
     private Task parseTaskFromFile(String line) throws HabpyDuckException {
         String[] parts = line.split(" \\| ", -1);
@@ -111,17 +111,19 @@ public class Storage {
 
         Task task;
         switch (parts[0]) {
-        case "D":
-            task = new Deadline(unescapeFileField(parts[2]), parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
-            break;
-        case "E":
-            task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]), unescapeFileField(parts[4]));
-            break;
-        case "T":
-            task = new Todo(unescapeFileField(parts[2]));
-            break;
-        default:
-            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
+            case "D":
+                task = new Deadline(unescapeFileField(parts[2]),
+                        parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
+                break;
+            case "E":
+                task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]),
+                        unescapeFileField(parts[4]));
+                break;
+            case "T":
+                task = new Todo(unescapeFileField(parts[2]));
+                break;
+            default:
+                throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
         }
 
         if (parts[1].equals("1")) {
@@ -133,9 +135,9 @@ public class Storage {
     /**
      * Converts deadline text from the save file into a LocalDateTime.
      *
-     * @param dateTimeText the saved date and time text
-     * @return the parsed date and time
-     * @throws HabpyDuckException if the saved value is not an ISO date or date-time
+     * @param dateTimeText the saved date and time text.
+     * @return the parsed date and time.
+     * @throws HabpyDuckException if the saved value is not an ISO date or date-time.
      */
     private LocalDateTime parseSavedDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
         try {
@@ -152,8 +154,8 @@ public class Storage {
     /**
      * Checks that a saved task line has a known type, valid done status, and correct number of fields.
      *
-     * @param parts the saved line split into fields
-     * @throws HabpyDuckException if the saved line is malformed
+     * @param parts the saved line split into fields.
+     * @throws HabpyDuckException if the saved line is malformed.
      */
     private void validateSavedTaskParts(String[] parts) throws HabpyDuckException {
         if (parts.length < 2) {
@@ -165,17 +167,17 @@ public class Storage {
 
         int expectedPartCount;
         switch (parts[0]) {
-        case "T":
-            expectedPartCount = 3;
-            break;
-        case "D":
-            expectedPartCount = 4;
-            break;
-        case "E":
-            expectedPartCount = 5;
-            break;
-        default:
-            throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
+            case "T":
+                expectedPartCount = 3;
+                break;
+            case "D":
+                expectedPartCount = 4;
+                break;
+            case "E":
+                expectedPartCount = 5;
+                break;
+            default:
+                throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
         }
         if (parts.length != expectedPartCount) {
             throw new HabpyDuckException("expected " + expectedPartCount + " fields but found " + parts.length);
@@ -190,8 +192,8 @@ public class Storage {
     /**
      * Escapes special characters so user text can be stored safely on one line.
      *
-     * @param field the task text to save
-     * @return the escaped text
+     * @param field the task text to save.
+     * @return the escaped text.
      */
     public static String escapeFileField(String field) {
         return field.replace("\\", "\\\\")
@@ -203,8 +205,8 @@ public class Storage {
     /**
      * Restores special characters that were escaped for the save file.
      *
-     * @param field the saved text to restore
-     * @return the unescaped text
+     * @param field the saved text to restore.
+     * @return the unescaped text.
      */
     private String unescapeFileField(String field) {
         StringBuilder result = new StringBuilder();
@@ -217,15 +219,15 @@ public class Storage {
             }
             if (isEscaping) {
                 switch (character) {
-                case 'n':
-                    result.append('\n');
-                    break;
-                case 'r':
-                    result.append('\r');
-                    break;
-                default:
-                    result.append(character);
-                    break;
+                    case 'n':
+                        result.append('\n');
+                        break;
+                    case 'r':
+                        result.append('\r');
+                        break;
+                    default:
+                        result.append(character);
+                        break;
                 }
                 isEscaping = false;
                 continue;

@@ -3,6 +3,7 @@ package habpyduck.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,9 @@ import habpyduck.command.UnmarkCommand;
  * and task indexes.
  */
 public class ParserTest {
+    private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
+            + "Try todo, deadline, event, list, mark, unmark, or delete!";
+
     private final Parser parser = new Parser();
 
     @Test
@@ -68,7 +72,7 @@ public class ParserTest {
         Command command = parser.parse("bye");
 
         assertInstanceOf(ExitCommand.class, command);
-        assertEquals(true, command.isExit());
+        assertTrue(command.isExit());
     }
 
     @Test
@@ -79,8 +83,7 @@ public class ParserTest {
 
     @Test
     public void parse_unknownCommand_exceptionThrown() {
-        assertParseExceptionMessage("hello",
-                "OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, or delete!");
+        assertParseExceptionMessage("hello", UNKNOWN_COMMAND_MESSAGE);
     }
 
     @Test

@@ -19,7 +19,7 @@ public enum CommandType {
     /**
      * Creates a command type with the exact word the user types.
      *
-     * @param commandWord the first word of the command
+     * @param commandWord the first word of the command.
      */
     CommandType(String commandWord) {
         this.commandWord = commandWord;
@@ -28,8 +28,8 @@ public enum CommandType {
     /**
      * Returns the command type represented by a command word.
      *
-     * @param commandWord the first word entered by the user
-     * @return the matching command type, or UNKNOWN if there is no match
+     * @param commandWord the first word entered by the user.
+     * @return the matching command type, or UNKNOWN if there is no match.
      */
     public static CommandType fromCommandWord(String commandWord) {
         for (CommandType commandType : values()) {

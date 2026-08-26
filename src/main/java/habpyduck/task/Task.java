@@ -12,7 +12,7 @@ public class Task {
     /**
      * Creates a task with the given description.
      *
-     * @param description the text that describes the task
+     * @param description the text that describes the task.
      */
     public Task(String description) {
         this.description = description;
@@ -22,7 +22,7 @@ public class Task {
     /**
      * Returns the icon used to show whether this task is done.
      *
-     * @return X if the task is done, or a blank space if it is not done
+     * @return X if the task is done, or a blank space if it is not done.
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
@@ -45,7 +45,7 @@ public class Task {
     /**
      * Returns the task description.
      *
-     * @return the text that describes the task
+     * @return the text that describes the task.
      */
     public String getDescription() {
         return description;
@@ -54,7 +54,7 @@ public class Task {
     /**
      * Returns this task in the simple text format used when saving tasks.
      *
-     * @return a line of text that can be written to the save file
+     * @return a line of text that can be written to the save file.
      */
     public String toFileString() {
         return "T | " + getDoneStatus() + " | " + Storage.escapeFileField(description);
@@ -63,7 +63,7 @@ public class Task {
     /**
      * Returns the numeric status used in the save file.
      *
-     * @return 1 if this task is done, or 0 if it is not done
+     * @return 1 if this task is done, or 0 if it is not done.
      */
     protected String getDoneStatus() {
         return isDone ? "1" : "0";
@@ -72,7 +72,7 @@ public class Task {
     /**
      * Returns the task in the format shown to users.
      *
-     * @return the task status icon and description
+     * @return the task status icon and description.
      */
     @Override
     public String toString() {

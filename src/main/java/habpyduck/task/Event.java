@@ -12,9 +12,9 @@ public class Event extends Task {
     /**
      * Creates an event task with the given description, start, and end.
      *
-     * @param description the text that describes the event
-     * @param from the date or time when the event starts
-     * @param to the date or time when the event ends
+     * @param description the text that describes the event.
+     * @param from the date or time when the event starts.
+     * @param to the date or time when the event ends.
      */
     public Event(String description, String from, String to) {
         super(description);
@@ -25,7 +25,7 @@ public class Event extends Task {
     /**
      * Returns this event in the simple text format used when saving tasks.
      *
-     * @return a line of text that can be written to the save file
+     * @return a line of text that can be written to the save file.
      */
     @Override
     public String toFileString() {
@@ -36,7 +36,7 @@ public class Event extends Task {
     /**
      * Returns the event task in the format shown to users.
      *
-     * @return the task type, status icon, description, start, and end
+     * @return the task type, status icon, description, start, and end.
      */
     @Override
     public String toString() {

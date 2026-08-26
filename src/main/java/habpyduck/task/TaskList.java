@@ -18,7 +18,7 @@ public class TaskList {
     /**
      * Creates a task list using tasks that were already loaded.
      *
-     * @param tasks the initial tasks to store
+     * @param tasks the initial tasks to store.
      */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
@@ -27,7 +27,7 @@ public class TaskList {
     /**
      * Replaces the current tasks with another set of tasks.
      *
-     * @param newTasks the tasks that should now be stored
+     * @param newTasks the tasks that should now be stored.
      */
     public void replaceAll(ArrayList<Task> newTasks) {
         tasks.clear();
@@ -37,7 +37,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task the task to add
+     * @param task the task to add.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -46,7 +46,7 @@ public class TaskList {
     /**
      * Removes and returns the last task in the list.
      *
-     * @return the removed task
+     * @return the removed task.
      */
     public Task removeLast() {
         return tasks.remove(tasks.size() - 1);
@@ -55,8 +55,8 @@ public class TaskList {
     /**
      * Removes and returns the task at the given zero-based index.
      *
-     * @param taskIndex the index of the task to remove
-     * @return the removed task
+     * @param taskIndex the index of the task to remove.
+     * @return the removed task.
      */
     public Task delete(int taskIndex) {
         return tasks.remove(taskIndex);
@@ -65,8 +65,8 @@ public class TaskList {
     /**
      * Inserts a task at the given zero-based index.
      *
-     * @param taskIndex the index where the task should be inserted
-     * @param task the task to insert
+     * @param taskIndex the index where the task should be inserted.
+     * @param task the task to insert.
      */
     public void insert(int taskIndex, Task task) {
         tasks.add(taskIndex, task);
@@ -75,7 +75,7 @@ public class TaskList {
     /**
      * Marks the task at the given zero-based index as done.
      *
-     * @param taskIndex the index of the task to mark
+     * @param taskIndex the index of the task to mark.
      */
     public void markAsDone(int taskIndex) {
         tasks.get(taskIndex).markAsDone();
@@ -84,7 +84,7 @@ public class TaskList {
     /**
      * Marks the task at the given zero-based index as not done.
      *
-     * @param taskIndex the index of the task to unmark
+     * @param taskIndex the index of the task to unmark.
      */
     public void markAsNotDone(int taskIndex) {
         tasks.get(taskIndex).markAsNotDone();
@@ -93,8 +93,8 @@ public class TaskList {
     /**
      * Returns the task at the given zero-based index.
      *
-     * @param taskIndex the index of the task to return
-     * @return the requested task
+     * @param taskIndex the index of the task to return.
+     * @return the requested task.
      */
     public Task get(int taskIndex) {
         return tasks.get(taskIndex);
@@ -103,7 +103,7 @@ public class TaskList {
     /**
      * Returns the number of tasks stored.
      *
-     * @return the number of tasks
+     * @return the number of tasks.
      */
     public int size() {
         return tasks.size();
@@ -112,7 +112,7 @@ public class TaskList {
     /**
      * Returns a copy of the tasks as an ArrayList for UI display and storage.
      *
-     * @return a copy of the stored tasks
+     * @return a copy of the stored tasks.
      */
     public ArrayList<Task> asList() {
         return new ArrayList<>(tasks);
