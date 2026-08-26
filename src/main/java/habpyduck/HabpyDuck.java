@@ -10,6 +10,11 @@ import habpyduck.ui.Ui;
  * Entry point for the HabpyDuck chatbot.
  */
 public class HabpyDuck {
+    /**
+     * Starts the chatbot, reads user commands, executes them, and exits when the user is done.
+     *
+     * @param args Command line arguments supplied by the Java launcher.
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         Storage storage = new Storage("data", "habpyduck.txt");
