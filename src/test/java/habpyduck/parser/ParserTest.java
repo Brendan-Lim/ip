@@ -26,6 +26,8 @@ import habpyduck.command.UnmarkCommand;
 public class ParserTest {
     private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
             + "Try todo, deadline, event, list, mark, unmark, delete, or find!";
+    private static final String INVALID_DEADLINE_DATE_TIME_MESSAGE = "OH NO!!! Please enter the deadline date and "
+            + "time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800";
 
     private final Parser parser = new Parser();
 
@@ -122,7 +124,7 @@ public class ParserTest {
     @Test
     public void parse_deadlineWithInvalidDateTime_exceptionThrown() {
         assertParseExceptionMessage("deadline return book /by 2026-08-25",
-                "OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800");
+                INVALID_DEADLINE_DATE_TIME_MESSAGE);
     }
 
     @Test
@@ -166,20 +168,18 @@ public class ParserTest {
 
     @Test
     public void parseUserDeadlineDateTime_invalidFormat_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseUserDeadlineDateTime("2026-08-25 1800"));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseUserDeadlineDateTime("2026-08-25 1800"));
 
-        assertEquals("OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800",
-                exception.getMessage());
+        assertEquals(INVALID_DEADLINE_DATE_TIME_MESSAGE, exception.getMessage());
     }
 
     @Test
     public void parseUserDeadlineDateTime_blankText_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseUserDeadlineDateTime("   "));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseUserDeadlineDateTime("   "));
 
-        assertEquals("OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800",
-                exception.getMessage());
+        assertEquals(INVALID_DEADLINE_DATE_TIME_MESSAGE, exception.getMessage());
     }
 
     @Test
@@ -199,8 +199,8 @@ public class ParserTest {
 
     @Test
     public void parseTaskIndex_missingTaskNumber_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseTaskIndex("unmark", "unmark", 3));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseTaskIndex("unmark", "unmark", 3));
 
         assertEquals("OH NO!!! Please tell me which task to unmark, like: unmark 2",
                 exception.getMessage());
@@ -208,8 +208,8 @@ public class ParserTest {
 
     @Test
     public void parseTaskIndex_nonNumericTaskNumber_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseTaskIndex("delete abc", "delete", 3));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseTaskIndex("delete abc", "delete", 3));
 
         assertEquals("OH NO!!! Please use a number after delete, like: delete 2",
                 exception.getMessage());
@@ -217,24 +217,24 @@ public class ParserTest {
 
     @Test
     public void parseTaskIndex_zeroTaskNumber_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseTaskIndex("mark 0", "mark", 3));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseTaskIndex("mark 0", "mark", 3));
 
         assertEquals("OH NO!!! Task 0 does not exist in your list.", exception.getMessage());
     }
 
     @Test
     public void parseTaskIndex_negativeTaskNumber_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseTaskIndex("mark -1", "mark", 3));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseTaskIndex("mark -1", "mark", 3));
 
         assertEquals("OH NO!!! Task -1 does not exist in your list.", exception.getMessage());
     }
 
     @Test
     public void parseTaskIndex_taskNumberAboveTaskCount_exceptionThrown() {
-        HabpyDuckException exception = assertThrows(HabpyDuckException.class,
-                () -> parser.parseTaskIndex("mark 4", "mark", 3));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> parser.parseTaskIndex("mark 4", "mark", 3));
 
         assertEquals("OH NO!!! Task 4 does not exist in your list.", exception.getMessage());
     }

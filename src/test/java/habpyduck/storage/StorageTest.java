@@ -1,6 +1,7 @@
 package habpyduck.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -132,8 +133,8 @@ public class StorageTest {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new Todo("read book"));
 
-        HabpyDuckException exception = org.junit.jupiter.api.Assertions.assertThrows(HabpyDuckException.class,
-                () -> storage.saveTasks(tasks));
+        HabpyDuckException exception = assertThrows(
+                HabpyDuckException.class, () -> storage.saveTasks(tasks));
 
         assertEquals("OH NO!!! I could not save your tasks to " + directoryPath + ".",
                 exception.getMessage());

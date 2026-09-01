@@ -46,32 +46,32 @@ public class Parser {
      */
     public Command parse(String command) throws HabpyDuckException {
         switch (getCommandType(command)) {
-        case LIST:
-            return new ListCommand();
-        case MARK:
-            return new MarkCommand(parseTaskNumber(command, "mark"));
-        case UNMARK:
-            return new UnmarkCommand(parseTaskNumber(command, "unmark"));
-        case DELETE:
-            return new DeleteCommand(parseTaskNumber(command, "delete"));
-        case FIND:
-            return new FindCommand(parseFindKeyword(command));
-        case TODO:
-            return new AddCommand(new Todo(parseTodoDescription(command)));
-        case DEADLINE:
-            return new AddCommand(parseDeadline(command));
-        case EVENT:
-            return new AddCommand(parseEvent(command));
-        case BYE:
-            return new ExitCommand();
-        case UNKNOWN:
-            if (command.isBlank()) {
-                throw new HabpyDuckException(
-                        "OH NO!!! I didn't catch a command, friend. Please type something for me.");
-            }
-            throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
-        default:
-            throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
+            case LIST:
+                return new ListCommand();
+            case MARK:
+                return new MarkCommand(parseTaskNumber(command, "mark"));
+            case UNMARK:
+                return new UnmarkCommand(parseTaskNumber(command, "unmark"));
+            case DELETE:
+                return new DeleteCommand(parseTaskNumber(command, "delete"));
+            case FIND:
+                return new FindCommand(parseFindKeyword(command));
+            case TODO:
+                return new AddCommand(new Todo(parseTodoDescription(command)));
+            case DEADLINE:
+                return new AddCommand(parseDeadline(command));
+            case EVENT:
+                return new AddCommand(parseEvent(command));
+            case BYE:
+                return new ExitCommand();
+            case UNKNOWN:
+                if (command.isBlank()) {
+                    throw new HabpyDuckException(
+                            "OH NO!!! I didn't catch a command, friend. Please type something for me.");
+                }
+                throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
+            default:
+                throw new HabpyDuckException(UNKNOWN_COMMAND_MESSAGE);
         }
     }
 
