@@ -4,6 +4,7 @@
     -fx-border-width: 2px;
     -fx-background-radius: 1em 1em 0 1em;
     -fx-border-radius: 1em 1em 0 1em;
+    -fx-padding: 8px 10px;
 }
 
 .reply-label {

@@ -10,24 +10,18 @@
 <VBox stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="habpyduck.ui.MainWindow">
     <ScrollPane fx:id="scrollPane" fitToWidth="true" minHeight="0.0" VBox.vgrow="ALWAYS">
         <content>
-            <VBox fx:id="dialogContainer" spacing="8">
+            <VBox fx:id="dialogContainer" spacing="10">
                 <padding>
-                    <Insets bottom="10" left="10" right="10" top="10" />
+                    <Insets bottom="12" left="12" right="12" top="12" />
                 </padding>
             </VBox>
         </content>
     </ScrollPane>
-    <HBox fx:id="inputArea" spacing="8">
+    <HBox fx:id="inputArea" spacing="10">
         <padding>
-            <Insets bottom="10" left="10" right="10" top="10" />
+            <Insets bottom="12" left="12" right="12" top="12" />
         </padding>
-        <TextField fx:id="userInput" onAction="#handleUserInput" promptText="Talk to me!" HBox.hgrow="ALWAYS">
-         <HBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </HBox.margin></TextField>
-        <Button fx:id="sendButton" defaultButton="true" onAction="#handleUserInput" text="Send">
-         <HBox.margin>
-            <Insets right="10.0" top="10.0" />
-         </HBox.margin></Button>
+        <TextField fx:id="userInput" onAction="#handleUserInput" promptText="Talk to me!" HBox.hgrow="ALWAYS" />
+        <Button fx:id="sendButton" defaultButton="true" onAction="#handleUserInput" text="Send" />
     </HBox>
 </VBox>
