@@ -56,7 +56,7 @@ checkstyle {
 }
 
 application {
-    mainClass = 'habpyduck.HabpyDuck'
+    mainClass = 'habpyduck.Launcher'
 }
 
 jar {
