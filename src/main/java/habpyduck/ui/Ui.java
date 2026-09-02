@@ -50,8 +50,8 @@ public class Ui {
                 + "                  |_|    |___/                       \n";
         showSeparator();
         output.print(banner);
-        output.println("Hi friend! I'm " + CHATBOT_NAME + ".");
-        output.println("What can I do for you today?");
+        showLines("Hi friend! I'm " + CHATBOT_NAME + ".",
+                "What can I do for you today?");
         showSeparator();
     }
 
@@ -60,7 +60,7 @@ public class Ui {
      */
     public void showBye() {
         showSeparator();
-        output.println(BYE_MESSAGE);
+        showLines(BYE_MESSAGE);
         showSeparator();
     }
 
@@ -105,7 +105,7 @@ public class Ui {
      * @param message the message to show.
      */
     public void showError(String message) {
-        output.println(message);
+        showLines(message);
     }
 
     /**
@@ -139,9 +139,9 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskAdded(Task task, int taskCount) {
-        output.println("Got it. I've added this task:");
-        output.println("  " + task);
-        output.println("Now you have " + taskCount + " tasks in the list.");
+        showLines("Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -150,8 +150,8 @@ public class Ui {
      * @param task the task that was marked.
      */
     public void showTaskMarked(Task task) {
-        output.println("YAY GOOD JOB!!! I've marked this task as done:");
-        output.println("  " + task);
+        showLines("YAY GOOD JOB!!! I've marked this task as done:",
+                "  " + task);
     }
 
     /**
@@ -160,8 +160,8 @@ public class Ui {
      * @param task the task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
-        output.println("OK, I've marked this task as not done yet, all the best friend:");
-        output.println("  " + task);
+        showLines("OK, I've marked this task as not done yet, all the best friend:",
+                "  " + task);
     }
 
     /**
@@ -171,8 +171,14 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        output.println("Noted. I've removed this task:");
-        output.println("  " + task);
-        output.println("Now you have " + taskCount + " tasks in the list.");
+        showLines("Noted. I've removed this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
+    }
+
+    private void showLines(String... lines) {
+        for (String line : lines) {
+            output.println(line);
+        }
     }
 }
