@@ -18,6 +18,7 @@ public class HabpyDuck {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
+    private String commandType;
 
     /**
      * Creates a chatbot that uses the default save file.
@@ -39,6 +40,7 @@ public class HabpyDuck {
         this.storage = storage;
         this.parser = parser;
         this.ui = ui;
+        commandType = "";
         tasks = new TaskList(storage.loadTasks());
     }
 
@@ -64,15 +66,26 @@ public class HabpyDuck {
 
         try {
             Command command = parser.parse(commandText);
+            commandType = command.getClass().getSimpleName();
             if (command.isExit()) {
                 return responseUi.getByeMessage();
             }
             command.execute(tasks, responseUi, storage);
         } catch (HabpyDuckException e) {
+            commandType = "";
             responseUi.showError(e.getMessage());
         }
 
         return responseStream.toString(StandardCharsets.UTF_8).stripTrailing();
+    }
+
+    /**
+     * Returns the command class name from the most recent successful command.
+     *
+     * @return the most recent command class name, or an empty string if parsing failed.
+     */
+    public String getCommandType() {
+        return commandType;
     }
 
     /**
