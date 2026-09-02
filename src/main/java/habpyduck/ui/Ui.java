@@ -1,5 +1,6 @@
 package habpyduck.ui;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,15 +11,31 @@ import habpyduck.task.Task;
  */
 public class Ui {
     private static final String CHATBOT_NAME = "HabpyDuck";
+    private static final String BYE_MESSAGE = "Bye friend. Hope to see you again soon!";
     private static final String SEPARATOR = "____________________________________________________________";
 
+    private final PrintStream output;
     private final Scanner scanner;
 
     /**
      * Creates a UI that reads commands from standard input.
      */
     public Ui() {
-        scanner = new Scanner(System.in);
+        this(System.out, new Scanner(System.in));
+    }
+
+    /**
+     * Creates a UI that writes messages to the given output stream.
+     *
+     * @param output the stream used for messages.
+     */
+    public Ui(PrintStream output) {
+        this(output, null);
+    }
+
+    private Ui(PrintStream output, Scanner scanner) {
+        this.output = output;
+        this.scanner = scanner;
     }
 
     /**
@@ -32,9 +49,9 @@ public class Ui {
                 + "|_| |_|\\__,_|_.__/| .__/ \\__, |____/ \\__,_|\\___|_|\\_\\\n"
                 + "                  |_|    |___/                       \n";
         showSeparator();
-        System.out.print(banner);
-        System.out.println("Hi friend! I'm " + CHATBOT_NAME + ".");
-        System.out.println("What can I do for you today?");
+        output.print(banner);
+        output.println("Hi friend! I'm " + CHATBOT_NAME + ".");
+        output.println("What can I do for you today?");
         showSeparator();
     }
 
@@ -43,8 +60,17 @@ public class Ui {
      */
     public void showBye() {
         showSeparator();
-        System.out.println("Bye friend. Hope to see you again soon!");
+        output.println(BYE_MESSAGE);
         showSeparator();
+    }
+
+    /**
+     * Returns the farewell text without console separator lines.
+     *
+     * @return the farewell text.
+     */
+    public String getByeMessage() {
+        return BYE_MESSAGE;
     }
 
     /**
@@ -53,7 +79,7 @@ public class Ui {
      * @return true if another command can be read.
      */
     public boolean hasNextCommand() {
-        return scanner.hasNextLine();
+        return scanner != null && scanner.hasNextLine();
     }
 
     /**
@@ -62,6 +88,7 @@ public class Ui {
      * @return the command entered by the user.
      */
     public String readCommand() {
+        assert scanner != null : "Scanner should be available before reading console input";
         return scanner.nextLine();
     }
 
@@ -69,7 +96,7 @@ public class Ui {
      * Prints the standard separator line.
      */
     public void showSeparator() {
-        System.out.println(SEPARATOR);
+        output.println(SEPARATOR);
     }
 
     /**
@@ -78,7 +105,7 @@ public class Ui {
      * @param message the message to show.
      */
     public void showError(String message) {
-        System.out.println(message);
+        output.println(message);
     }
 
     /**
@@ -87,9 +114,9 @@ public class Ui {
      * @param tasks the tasks to show.
      */
     public void showTaskList(ArrayList<Task> tasks) {
-        System.out.println("Here are the tasks in your list:");
+        output.println("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
+            output.println((i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -99,9 +126,9 @@ public class Ui {
      * @param tasks the matching tasks to show.
      */
     public void showMatchingTasks(ArrayList<Task> tasks) {
-        System.out.println("Here are the matching tasks in your list:");
+        output.println("Here are the matching tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
+            output.println((i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -112,9 +139,9 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskAdded(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        output.println("Got it. I've added this task:");
+        output.println("  " + task);
+        output.println("Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -123,8 +150,8 @@ public class Ui {
      * @param task the task that was marked.
      */
     public void showTaskMarked(Task task) {
-        System.out.println("YAY GOOD JOB!!! I've marked this task as done:");
-        System.out.println("  " + task);
+        output.println("YAY GOOD JOB!!! I've marked this task as done:");
+        output.println("  " + task);
     }
 
     /**
@@ -133,8 +160,8 @@ public class Ui {
      * @param task the task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
-        System.out.println("OK, I've marked this task as not done yet, all the best friend:");
-        System.out.println("  " + task);
+        output.println("OK, I've marked this task as not done yet, all the best friend:");
+        output.println("  " + task);
     }
 
     /**
@@ -144,8 +171,8 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        output.println("Noted. I've removed this task:");
+        output.println("  " + task);
+        output.println("Now you have " + taskCount + " tasks in the list.");
     }
 }

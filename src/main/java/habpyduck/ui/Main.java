@@ -1,5 +1,6 @@
 package habpyduck.ui;
 
+import habpyduck.HabpyDuck;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static final int WINDOW_WIDTH = 400;
     private static final int WINDOW_HEIGHT = 600;
+
+    private final HabpyDuck habpyDuck = new HabpyDuck();
 
     /**
      * Launches the JavaFX application.
@@ -55,8 +58,7 @@ public class Main extends Application {
             String input = userInput.getText().trim();
             if (!input.isEmpty()) {
                 dialogContainer.getChildren().add(DialogBox.getUserDialog(input));
-                dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(
-                        "I'll learn how to respond to commands in Part 3."));
+                dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(habpyDuck.getResponse(input)));
                 userInput.clear();
             }
         });
