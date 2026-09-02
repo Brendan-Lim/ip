@@ -2,8 +2,11 @@ package habpyduck.ui;
 
 import habpyduck.HabpyDuck;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -23,11 +26,22 @@ public class MainWindow {
     @FXML
     private TextField userInput;
 
+    @FXML
+    private Button sendButton;
+
+    @FXML
+    private HBox inputArea;
+
     /**
      * Initializes JavaFX bindings and the first greeting message.
      */
     @FXML
     public void initialize() {
+        scrollPane.setMinHeight(0);
+        inputArea.setMinHeight(Region.USE_PREF_SIZE);
+        inputArea.setMaxHeight(Region.USE_PREF_SIZE);
+        userInput.setMinHeight(Region.USE_PREF_SIZE);
+        sendButton.setMinHeight(Region.USE_PREF_SIZE);
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(WELCOME_MESSAGE));
     }

@@ -7,8 +7,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="habpyduck.ui.MainWindow">
-    <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="habpyduck.ui.MainWindow">
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" minHeight="0.0" VBox.vgrow="ALWAYS">
         <content>
             <VBox fx:id="dialogContainer" spacing="8">
                 <padding>
@@ -17,7 +17,7 @@
             </VBox>
         </content>
     </ScrollPane>
-    <HBox spacing="8">
+    <HBox fx:id="inputArea" spacing="8">
         <padding>
             <Insets bottom="10" left="10" right="10" top="10" />
         </padding>
@@ -25,7 +25,7 @@
          <HBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </HBox.margin></TextField>
-        <Button defaultButton="true" onAction="#handleUserInput" text="Send">
+        <Button fx:id="sendButton" defaultButton="true" onAction="#handleUserInput" text="Send">
          <HBox.margin>
             <Insets right="10.0" top="10.0" />
          </HBox.margin></Button>
