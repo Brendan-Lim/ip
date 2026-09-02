@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="habpyduck.ui.MainWindow">
+<VBox stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="habpyduck.ui.MainWindow">
     <ScrollPane fx:id="scrollPane" fitToWidth="true" minHeight="0.0" VBox.vgrow="ALWAYS">
         <content>
             <VBox fx:id="dialogContainer" spacing="8">

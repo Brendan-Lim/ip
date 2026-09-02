@@ -71,7 +71,9 @@ public class DialogBox extends HBox {
      * @return a dialog box aligned to the left.
      */
     public static DialogBox getHabpyDuckDialog(String text) {
-        return new DialogBox(text, HABPY_DUCK_IMAGE_PATH);
+        DialogBox dialogBox = new DialogBox(text, HABPY_DUCK_IMAGE_PATH);
+        dialogBox.message.getStyleClass().add("reply-label");
+        return dialogBox;
     }
 
     /**
