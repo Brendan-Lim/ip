@@ -1,14 +1,11 @@
 package habpyduck.ui;
 
+import java.io.IOException;
+
 import habpyduck.HabpyDuck;
 import javafx.application.Application;
-import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -18,8 +15,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static final int WINDOW_WIDTH = 400;
     private static final int WINDOW_HEIGHT = 600;
-
-    private final HabpyDuck habpyDuck = new HabpyDuck();
 
     /**
      * Launches the JavaFX application.
@@ -34,40 +29,15 @@ public class Main extends Application {
      * Creates the first JavaFX scene shown to the user.
      *
      * @param stage the main application window.
+     * @throws IOException if the FXML file cannot be loaded.
      */
     @Override
-    public void start(Stage stage) {
-        VBox dialogContainer = new VBox();
-        dialogContainer.setPadding(new Insets(10));
-        dialogContainer.setSpacing(8);
-        dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(
-                "Hi friend! I'm HabpyDuck.\nWhat can I do for you today?"));
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
+        VBox root = fxmlLoader.load();
+        MainWindow mainWindow = fxmlLoader.getController();
+        mainWindow.setHabpyDuck(new HabpyDuck());
 
-        ScrollPane scrollPane = new ScrollPane(dialogContainer);
-        scrollPane.setFitToWidth(true);
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-
-        TextField userInput = new TextField();
-        userInput.setPromptText("Type your command here");
-        HBox.setHgrow(userInput, Priority.ALWAYS);
-
-        Button sendButton = new Button("Send");
-        sendButton.setDefaultButton(true);
-        sendButton.setOnAction(event -> {
-            String input = userInput.getText().trim();
-            if (!input.isEmpty()) {
-                dialogContainer.getChildren().add(DialogBox.getUserDialog(input));
-                dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(habpyDuck.getResponse(input)));
-                userInput.clear();
-            }
-        });
-
-        HBox inputArea = new HBox(userInput, sendButton);
-        inputArea.setPadding(new Insets(10));
-        inputArea.setSpacing(8);
-
-        VBox root = new VBox(scrollPane, inputArea);
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setTitle("HabpyDuck");
         stage.setScene(scene);

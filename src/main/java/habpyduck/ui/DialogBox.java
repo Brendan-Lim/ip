@@ -1,8 +1,10 @@
 package habpyduck.ui;
 
+import java.io.IOException;
 import java.util.Objects;
 
-import javafx.geometry.Insets;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,11 +19,15 @@ import javafx.scene.layout.Region;
 public class DialogBox extends HBox {
     private static final int AVATAR_SIZE = 40;
     private static final int MESSAGE_MAX_WIDTH = 260;
+    private static final String DIALOG_BOX_FXML_PATH = "/view/DialogBox.fxml";
     private static final String HABPY_DUCK_IMAGE_PATH = "/images/habpyduck.png";
     private static final String USER_IMAGE_PATH = "/images/user.png";
 
-    private final Label message;
-    private final ImageView avatar;
+    @FXML
+    private Label message;
+
+    @FXML
+    private ImageView avatar;
 
     /**
      * Creates a dialog box with a text message and an avatar image.
@@ -30,16 +36,17 @@ public class DialogBox extends HBox {
      * @param imagePath the classpath location of the avatar image.
      */
     public DialogBox(String text, String imagePath) {
-        message = new Label(text);
+        loadDialogBoxView();
+
+        Image image = new Image(Objects.requireNonNull(DialogBox.class.getResourceAsStream(imagePath)));
         message.setWrapText(true);
         message.setMaxWidth(MESSAGE_MAX_WIDTH);
-        message.setPadding(new Insets(8));
-        message.setStyle("-fx-background-color: white; -fx-border-color: lightgray;");
-
-        avatar = createAvatar(imagePath);
+        avatar.setImage(image);
+        avatar.setFitHeight(AVATAR_SIZE);
+        avatar.setFitWidth(AVATAR_SIZE);
+        avatar.setPreserveRatio(true);
+        message.setText(text);
         setAlignment(Pos.TOP_LEFT);
-        setSpacing(8);
-        getChildren().addAll(avatar, message);
     }
 
     /**
@@ -68,17 +75,16 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Creates an avatar from an image resource.
-     *
-     * @param imagePath the classpath location of the avatar image.
-     * @return the avatar image view.
+     * Loads the FXML structure used by this dialog box.
      */
-    private static ImageView createAvatar(String imagePath) {
-        Image image = new Image(Objects.requireNonNull(DialogBox.class.getResourceAsStream(imagePath)));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(AVATAR_SIZE);
-        imageView.setFitWidth(AVATAR_SIZE);
-        imageView.setPreserveRatio(true);
-        return imageView;
+    private void loadDialogBoxView() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_FXML_PATH));
+            fxmlLoader.setController(this);
+            fxmlLoader.setRoot(this);
+            fxmlLoader.load();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load dialog box FXML.", e);
+        }
     }
 }

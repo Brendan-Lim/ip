@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="javafx.scene.layout.HBox"
+         xmlns="http://javafx.com/javafx/17"
+         xmlns:fx="http://javafx.com/fxml/1"
+         spacing="8">
+    <ImageView fx:id="avatar" />
+    <Label fx:id="message" wrapText="true">
+        <padding>
+            <Insets top="8" right="8" bottom="8" left="8" />
+        </padding>
+        <style>
+            -fx-background-color: white; -fx-border-color: lightgray;
+        </style>
+    </Label>
+</fx:root>
