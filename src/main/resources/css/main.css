@@ -1,6 +1,10 @@
 .root {
     main-color: #edfff2;
     -fx-background-color: linear-gradient(to bottom, #f8fff1, main-color);
+    -fx-background-image: url("../images/background.png");
+    -fx-background-position: center;
+    -fx-background-repeat: repeat;
+    -fx-background-size: cover;
 }
 
 .text-field {
