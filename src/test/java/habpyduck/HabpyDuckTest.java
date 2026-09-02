@@ -58,4 +58,27 @@ public class HabpyDuckTest {
 
         assertEquals("T | 0 | read book", Files.readString(saveFile).stripTrailing());
     }
+
+    @Test
+    public void getCommandType_successfulCommands_returnsLastCommandClassName() {
+        HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
+
+        habpyDuck.getResponse("todo read book");
+        assertEquals("AddCommand", habpyDuck.getCommandType());
+
+        habpyDuck.getResponse("mark 1");
+        assertEquals("MarkCommand", habpyDuck.getCommandType());
+
+        habpyDuck.getResponse("delete 1");
+        assertEquals("DeleteCommand", habpyDuck.getCommandType());
+    }
+
+    @Test
+    public void getCommandType_invalidCommand_returnsEmptyString() {
+        HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
+
+        habpyDuck.getResponse("todo");
+
+        assertEquals("", habpyDuck.getCommandType());
+    }
 }

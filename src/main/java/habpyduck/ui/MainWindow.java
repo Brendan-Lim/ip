@@ -66,7 +66,9 @@ public class MainWindow {
         }
 
         dialogContainer.getChildren().add(DialogBox.getUserDialog(input));
-        dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(habpyDuck.getResponse(input)));
+        String response = habpyDuck.getResponse(input);
+        String commandType = habpyDuck.getCommandType();
+        dialogContainer.getChildren().add(DialogBox.getHabpyDuckDialog(response, commandType));
         userInput.clear();
     }
 }
