@@ -15,9 +15,12 @@ import habpyduck.command.Command;
 import habpyduck.command.DeleteCommand;
 import habpyduck.command.ExitCommand;
 import habpyduck.command.FindCommand;
+import habpyduck.command.FindTagCommand;
 import habpyduck.command.ListCommand;
 import habpyduck.command.MarkCommand;
+import habpyduck.command.TagCommand;
 import habpyduck.command.UnmarkCommand;
+import habpyduck.command.UntagCommand;
 
 /**
  * Tests how raw user input is parsed into command types, command objects, dates,
@@ -25,7 +28,9 @@ import habpyduck.command.UnmarkCommand;
  */
 public class ParserTest {
     private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
-            + "Try todo, deadline, event, list, mark, unmark, delete, or find!";
+            + "Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!";
+    private static final String INVALID_TAG_MESSAGE = "OH NO!!! Tags must start with # and use only letters, "
+            + "numbers, hyphens, or underscores. Try something like: tag 2 #fun";
     private static final String INVALID_DEADLINE_DATE_TIME_MESSAGE = "OH NO!!! Please enter the deadline date and "
             + "time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800";
 
@@ -38,6 +43,9 @@ public class ParserTest {
         assertEquals(CommandType.UNMARK, parser.getCommandType("unmark 1"));
         assertEquals(CommandType.DELETE, parser.getCommandType("delete 1"));
         assertEquals(CommandType.FIND, parser.getCommandType("find book"));
+        assertEquals(CommandType.FINDTAG, parser.getCommandType("findtag #fun"));
+        assertEquals(CommandType.TAG, parser.getCommandType("tag 1 #fun"));
+        assertEquals(CommandType.UNTAG, parser.getCommandType("untag 1 #fun"));
         assertEquals(CommandType.TODO, parser.getCommandType("todo read book"));
         assertEquals(CommandType.DEADLINE, parser.getCommandType("deadline return book /by 25/8/2026 1800"));
         assertEquals(CommandType.EVENT, parser.getCommandType("event meeting /from 2pm /to 4pm"));
@@ -62,6 +70,9 @@ public class ParserTest {
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
         assertInstanceOf(FindCommand.class, parser.parse("find book"));
+        assertInstanceOf(FindTagCommand.class, parser.parse("findtag #fun"));
+        assertInstanceOf(TagCommand.class, parser.parse("tag 1 #fun #school"));
+        assertInstanceOf(UntagCommand.class, parser.parse("untag 1 #fun"));
         assertInstanceOf(ExitCommand.class, parser.parse("bye"));
     }
 
@@ -95,6 +106,48 @@ public class ParserTest {
     public void parse_findWithoutKeyword_exceptionThrown() {
         assertParseExceptionMessage("find",
                 "OH NO!!! Please tell me what keyword to find, like: find book");
+    }
+
+    @Test
+    public void parse_findTagWithoutTag_exceptionThrown() {
+        assertParseExceptionMessage("findtag",
+                "OH NO!!! Please tell me which tag to use, like: findtag #fun");
+    }
+
+    @Test
+    public void parse_tagWithoutEnoughDetails_exceptionThrown() {
+        assertParseExceptionMessage("tag 1",
+                "OH NO!!! Please use this format for tags: tag TASK_NUMBER #TAG...");
+    }
+
+    @Test
+    public void parse_tagWithInvalidTaskNumber_exceptionThrown() {
+        assertParseExceptionMessage("tag abc #fun",
+                "OH NO!!! Please use a number after tag, like: tag 2");
+    }
+
+    @Test
+    public void parse_tagWithoutHash_exceptionThrown() {
+        assertParseExceptionMessage("tag 1 fun", INVALID_TAG_MESSAGE);
+    }
+
+    @Test
+    public void parse_tagWithInvalidCharacters_exceptionThrown() {
+        assertParseExceptionMessage("tag 1 #fun!",
+                "OH NO!!! Tags must start with # and use only letters, numbers, "
+                        + "hyphens, or underscores. Try something like: tag 2 #fun");
+    }
+
+    @Test
+    public void parse_untagWithoutEnoughDetails_exceptionThrown() {
+        assertParseExceptionMessage("untag 1",
+                "OH NO!!! Please use this format for untagging: untag TASK_NUMBER #TAG");
+    }
+
+    @Test
+    public void parse_untagWithTooManyTags_exceptionThrown() {
+        assertParseExceptionMessage("untag 1 #fun #school",
+                "OH NO!!! Please use this format for untagging: untag TASK_NUMBER #TAG");
     }
 
     @Test

@@ -20,6 +20,9 @@ HabpyDuck is a task-tracking chatbot that helps you remember todos, deadlines, a
 | Mark a task as not done | `unmark TASK_NUMBER` |
 | Delete a task | `delete TASK_NUMBER` |
 | Find matching tasks | `find KEYWORD` |
+| Tag a task | `tag TASK_NUMBER #TAG...` |
+| Remove a tag | `untag TASK_NUMBER #TAG` |
+| Find tagged tasks | `findtag #TAG` |
 | Exit | `bye` |
 
 ## Adding Todos
@@ -154,6 +157,58 @@ Expected output:
 Here are the matching tasks in your list:
 1.[T][ ] read book
 2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
+```
+
+## Tagging Tasks
+
+Adds one or more tags to a task. Tags must start with `#` and can use letters, numbers, hyphens, and underscores.
+Tags are stored in lowercase, so `#Fun` and `#fun` are treated as the same tag.
+
+Example:
+
+```text
+tag 1 #fun #school_work
+```
+
+Expected output:
+
+```text
+Got it. I've tagged this task:
+  [T][ ] read book #fun #school_work
+```
+
+## Removing Tags
+
+Removes one tag from a task.
+
+Example:
+
+```text
+untag 1 #fun
+```
+
+Expected output:
+
+```text
+Got it. I've removed that tag from this task:
+  [T][ ] read book #school_work
+```
+
+## Finding Tagged Tasks
+
+Shows tasks that have the given tag. Normal `find` still searches task descriptions only.
+
+Example:
+
+```text
+findtag #school_work
+```
+
+Expected output:
+
+```text
+Here are the tasks with that tag:
+1.[T][ ] read book #school_work
 ```
 
 ## Exiting

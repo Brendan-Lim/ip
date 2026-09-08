@@ -127,6 +127,15 @@ public class Ui {
     }
 
     /**
+     * Prints tasks that have a searched tag.
+     *
+     * @param tasks the tagged tasks to show.
+     */
+    public void showTaggedTasks(ArrayList<Task> tasks) {
+        showNumberedTasks("Here are the tasks with that tag:", tasks);
+    }
+
+    /**
      * Prints a header followed by a numbered task list.
      *
      * @param header the heading shown before the tasks.
@@ -181,6 +190,26 @@ public class Ui {
         showLines("Noted. I've removed this task:",
                 "  " + task,
                 "Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /**
+     * Prints the standard message after adding tags to a task.
+     *
+     * @param task the task that was tagged.
+     */
+    public void showTaskTagged(Task task) {
+        showLines("Got it. I've tagged this task:",
+                "  " + task);
+    }
+
+    /**
+     * Prints the standard message after removing a tag from a task.
+     *
+     * @param task the task that was untagged.
+     */
+    public void showTaskUntagged(Task task) {
+        showLines("Got it. I've removed that tag from this task:",
+                "  " + task);
     }
 
     private void showLines(String... lines) {

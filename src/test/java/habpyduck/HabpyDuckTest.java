@@ -43,6 +43,50 @@ public class HabpyDuckTest {
     }
 
     @Test
+    public void getResponse_tagAndFindTagCommands_returnsTaggedTasks() {
+        HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
+
+        habpyDuck.getResponse("todo read book");
+        String tagResponse = habpyDuck.getResponse("tag 1 #Fun #school_work");
+        String findTagResponse = habpyDuck.getResponse("findtag #fun");
+
+        assertEquals(String.join(System.lineSeparator(),
+                "Got it. I've tagged this task:",
+                "  [T][ ] read book #fun #school_work"), tagResponse);
+        assertEquals(String.join(System.lineSeparator(),
+                "Here are the tasks with that tag:",
+                "1.[T][ ] read book #fun #school_work"), findTagResponse);
+    }
+
+    @Test
+    public void getResponse_untagCommand_removesTagFromTask() {
+        HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
+
+        habpyDuck.getResponse("todo read book");
+        habpyDuck.getResponse("tag 1 #fun #school");
+        String untagResponse = habpyDuck.getResponse("untag 1 #fun");
+
+        assertEquals(String.join(System.lineSeparator(),
+                "Got it. I've removed that tag from this task:",
+                "  [T][ ] read book #school"), untagResponse);
+    }
+
+    @Test
+    public void getResponse_invalidTagCommand_returnsErrorMessageWithoutChangingTasks() {
+        HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
+
+        habpyDuck.getResponse("todo read book");
+        String invalidResponse = habpyDuck.getResponse("tag 1 fun");
+        String listResponse = habpyDuck.getResponse("list");
+
+        assertEquals("OH NO!!! Tags must start with # and use only letters, numbers, hyphens, "
+                + "or underscores. Try something like: tag 2 #fun", invalidResponse);
+        assertEquals(String.join(System.lineSeparator(),
+                "Here are the tasks in your list:",
+                "1.[T][ ] read book"), listResponse);
+    }
+
+    @Test
     public void getResponse_byeCommand_returnsFarewellMessage() {
         HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
 
@@ -71,6 +115,16 @@ public class HabpyDuckTest {
 
         habpyDuck.getResponse("delete 1");
         assertEquals("DeleteCommand", habpyDuck.getCommandType());
+
+        habpyDuck.getResponse("todo write notes");
+        habpyDuck.getResponse("tag 1 #fun");
+        assertEquals("TagCommand", habpyDuck.getCommandType());
+
+        habpyDuck.getResponse("findtag #fun");
+        assertEquals("FindTagCommand", habpyDuck.getCommandType());
+
+        habpyDuck.getResponse("untag 1 #fun");
+        assertEquals("UntagCommand", habpyDuck.getCommandType());
     }
 
     @Test

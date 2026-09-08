@@ -35,7 +35,8 @@ public class Deadline extends Task {
     public String toFileString() {
         return Storage.DEADLINE_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
                 + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
-                + Storage.FILE_FIELD_SEPARATOR + by;
+                + Storage.FILE_FIELD_SEPARATOR + by
+                + formatTagsForFile();
     }
 
     /**
@@ -48,6 +49,6 @@ public class Deadline extends Task {
         String formattedDateTime = by.format(DISPLAY_DATE_FORMAT)
                 .replace("AM", "am")
                 .replace("PM", "pm");
-        return "[D]" + super.toString() + " (by: " + formattedDateTime + ")";
+        return "[D]" + getBaseDisplayText() + " (by: " + formattedDateTime + ")" + getDisplayTags();
     }
 }

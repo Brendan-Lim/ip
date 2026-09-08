@@ -32,7 +32,8 @@ public class Event extends Task {
         return Storage.EVENT_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
                 + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
                 + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(from)
-                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(to);
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(to)
+                + formatTagsForFile();
     }
 
     /**
@@ -42,6 +43,6 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E]" + getBaseDisplayText() + " (from: " + from + " to: " + to + ")" + getDisplayTags();
     }
 }

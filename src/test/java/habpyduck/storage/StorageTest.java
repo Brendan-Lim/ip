@@ -48,6 +48,9 @@ public class StorageTest {
         Deadline deadline = new Deadline("return book", LocalDateTime.of(2026, 8, 25, 18, 0));
         Event event = new Event("sync \\ call", "room | A", "4\\5pm");
         deadline.markAsDone();
+        todo.addTag("#fun");
+        todo.addTag("#school");
+        event.addTag("#work");
         tasks.add(todo);
         tasks.add(deadline);
         tasks.add(event);
@@ -55,14 +58,31 @@ public class StorageTest {
         storage.saveTasks(tasks);
 
         String expected = String.join(System.lineSeparator(),
-                "T | 0 | read \\| book",
+                "T | 0 | read \\| book | #fun,#school",
                 "D | 1 | return book | 2026-08-25T18:00",
-                "E | 0 | sync \\\\ call | room \\| A | 4\\\\5pm");
+                "E | 0 | sync \\\\ call | room \\| A | 4\\\\5pm | #work");
         assertEquals(expected, Files.readString(saveFile).stripTrailing());
     }
 
     @Test
     public void loadTasks_validSavedTasks_returnsTaskObjectsWithStatusAndDetails() throws Exception {
+        Path saveFile = tempDir.resolve("tasks.txt");
+        Files.writeString(saveFile, String.join(System.lineSeparator(),
+                "T | 1 | read book | #fun,#school",
+                "D | 0 | return book | 2026-08-25T18:00",
+                "E | 1 | project meeting | Mon 2pm | 4pm | #work"));
+        Storage storage = new Storage(saveFile.toString());
+
+        ArrayList<Task> tasks = storage.loadTasks();
+
+        assertEquals(3, tasks.size());
+        assertEquals("[T][X] read book #fun #school", tasks.get(0).toString());
+        assertEquals("[D][ ] return book (by: Aug 25 2026, 6:00pm)", tasks.get(1).toString());
+        assertEquals("[E][X] project meeting (from: Mon 2pm to: 4pm) #work", tasks.get(2).toString());
+    }
+
+    @Test
+    public void loadTasks_untaggedSavedTasks_returnsTaskObjectsWithoutTags() throws Exception {
         Path saveFile = tempDir.resolve("tasks.txt");
         Files.writeString(saveFile, String.join(System.lineSeparator(),
                 "T | 1 | read book",
@@ -115,6 +135,7 @@ public class StorageTest {
                 "D | 0 | missing date",
                 "D | 0 | invalid date | tomorrow",
                 "E | 1 | project \\| meeting | C:\\\\start | 4\\|5pm",
+                "T | 0 | invalid tag | fun",
                 "T | 0 |    "));
         Storage storage = new Storage(saveFile.toString());
 
