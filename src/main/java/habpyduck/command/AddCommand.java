@@ -35,6 +35,7 @@ public class AddCommand extends Command {
         try {
             storage.saveTasks(tasks.asList());
         } catch (HabpyDuckException e) {
+            assert tasks.size() > 0 : "Added task should still be available for rollback";
             tasks.removeLast();
             throw e;
         }

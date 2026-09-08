@@ -36,6 +36,8 @@ public class DeleteCommand extends Command {
         try {
             storage.saveTasks(tasks.asList());
         } catch (HabpyDuckException e) {
+            assert taskIndex >= 0 && taskIndex <= tasks.size()
+                    : "Deleted task should be insertable at its original index for rollback";
             tasks.insert(taskIndex, removedTask);
             throw e;
         }

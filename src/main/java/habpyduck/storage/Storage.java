@@ -108,18 +108,22 @@ public class Storage {
     private Task parseTaskFromFile(String line) throws HabpyDuckException {
         String[] parts = line.split(" \\| ", -1);
         validateSavedTaskParts(parts);
+        assert parts.length >= 3 : "Validated saved task should have task details";
 
         Task task;
         switch (parts[0]) {
             case "D":
+                assert parts.length == 4 : "Validated deadline should have exactly 4 fields";
                 task = new Deadline(unescapeFileField(parts[2]),
                         parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
                 break;
             case "E":
+                assert parts.length == 5 : "Validated event should have exactly 5 fields";
                 task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]),
                         unescapeFileField(parts[4]));
                 break;
             case "T":
+                assert parts.length == 3 : "Validated todo should have exactly 3 fields";
                 task = new Todo(unescapeFileField(parts[2]));
                 break;
             default:

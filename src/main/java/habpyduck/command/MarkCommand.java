@@ -35,6 +35,8 @@ public class MarkCommand extends Command {
         try {
             storage.saveTasks(tasks.asList());
         } catch (HabpyDuckException e) {
+            assert taskIndex >= 0 && taskIndex < tasks.size()
+                    : "Marked task should still exist so the status change can be rolled back";
             tasks.markAsNotDone(taskIndex);
             throw e;
         }
