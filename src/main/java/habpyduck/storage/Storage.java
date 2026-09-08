@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import habpyduck.HabpyDuckException;
 import habpyduck.task.Deadline;
@@ -66,10 +67,9 @@ public class Storage {
     public void saveTasks(ArrayList<Task> tasks) throws HabpyDuckException {
         try {
             Files.createDirectories(filePath.getParent());
-            ArrayList<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(task.toFileString());
-            }
+            ArrayList<String> lines = tasks.stream()
+                    .map(Task::toFileString)
+                    .collect(Collectors.toCollection(ArrayList::new));
             Files.write(filePath, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new HabpyDuckException("OH NO!!! I could not save your tasks to " + filePath + ".");
