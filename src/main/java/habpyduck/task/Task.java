@@ -57,7 +57,8 @@ public class Task {
      * @return a line of text that can be written to the save file.
      */
     public String toFileString() {
-        return "T | " + getDoneStatus() + " | " + Storage.escapeFileField(description);
+        return Storage.TODO_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description);
     }
 
     /**
@@ -66,7 +67,7 @@ public class Task {
      * @return 1 if this task is done, or 0 if it is not done.
      */
     protected String getDoneStatus() {
-        return isDone ? "1" : "0";
+        return isDone ? Storage.DONE_STATUS : Storage.NOT_DONE_STATUS;
     }
 
     /**

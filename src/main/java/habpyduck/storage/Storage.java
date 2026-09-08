@@ -20,6 +20,31 @@ import habpyduck.ui.Ui;
  * Handles loading tasks from disk and saving tasks to disk.
  */
 public class Storage {
+    /** Separator used between fields in one saved task line. */
+    public static final String FILE_FIELD_SEPARATOR = " | ";
+    /** Status code used when saving completed tasks. */
+    public static final String DONE_STATUS = "1";
+    /** Status code used when saving incomplete tasks. */
+    public static final String NOT_DONE_STATUS = "0";
+    /** Task type code used when saving deadline tasks. */
+    public static final String DEADLINE_TASK_TYPE = "D";
+    /** Task type code used when saving event tasks. */
+    public static final String EVENT_TASK_TYPE = "E";
+    /** Task type code used when saving todo tasks. */
+    public static final String TODO_TASK_TYPE = "T";
+
+    private static final int DEADLINE_DATE_TIME_INDEX = 3;
+    private static final int DEADLINE_FIELD_COUNT = 4;
+    private static final int EVENT_END_INDEX = 4;
+    private static final int EVENT_FIELD_COUNT = 5;
+    private static final int EVENT_START_INDEX = 3;
+    private static final String FILE_FIELD_SEPARATOR_REGEX = " \\| ";
+    private static final int STATUS_INDEX = 1;
+    private static final int TASK_DESCRIPTION_INDEX = 2;
+    private static final int TASK_TYPE_INDEX = 0;
+    private static final int TODO_FIELD_COUNT = 3;
+    private static final int TYPE_AND_STATUS_FIELD_COUNT = 2;
+
     private final Path filePath;
 
     /**
@@ -106,31 +131,32 @@ public class Storage {
      * @throws HabpyDuckException if the saved line is not in the expected format.
      */
     private Task parseTaskFromFile(String line) throws HabpyDuckException {
-        String[] parts = line.split(" \\| ", -1);
+        String[] parts = line.split(FILE_FIELD_SEPARATOR_REGEX, -1);
         validateSavedTaskParts(parts);
-        assert parts.length >= 3 : "Validated saved task should have task details";
+        assert parts.length >= TODO_FIELD_COUNT : "Validated saved task should have task details";
 
         Task task;
-        switch (parts[0]) {
-            case "D":
-                assert parts.length == 4 : "Validated deadline should have exactly 4 fields";
-                task = new Deadline(unescapeFileField(parts[2]),
-                        parseSavedDeadlineDateTime(unescapeFileField(parts[3])));
+        switch (parts[TASK_TYPE_INDEX]) {
+            case DEADLINE_TASK_TYPE:
+                assert parts.length == DEADLINE_FIELD_COUNT : "Validated deadline should have exactly 4 fields";
+                task = new Deadline(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]),
+                        parseSavedDeadlineDateTime(unescapeFileField(parts[DEADLINE_DATE_TIME_INDEX])));
                 break;
-            case "E":
-                assert parts.length == 5 : "Validated event should have exactly 5 fields";
-                task = new Event(unescapeFileField(parts[2]), unescapeFileField(parts[3]),
-                        unescapeFileField(parts[4]));
+            case EVENT_TASK_TYPE:
+                assert parts.length == EVENT_FIELD_COUNT : "Validated event should have exactly 5 fields";
+                task = new Event(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]),
+                        unescapeFileField(parts[EVENT_START_INDEX]),
+                        unescapeFileField(parts[EVENT_END_INDEX]));
                 break;
-            case "T":
-                assert parts.length == 3 : "Validated todo should have exactly 3 fields";
-                task = new Todo(unescapeFileField(parts[2]));
+            case TODO_TASK_TYPE:
+                assert parts.length == TODO_FIELD_COUNT : "Validated todo should have exactly 3 fields";
+                task = new Todo(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]));
                 break;
             default:
-                throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
+                throw new HabpyDuckException("unknown task type '" + parts[TASK_TYPE_INDEX] + "'");
         }
 
-        if (parts[1].equals("1")) {
+        if (parts[STATUS_INDEX].equals(DONE_STATUS)) {
             task.markAsDone();
         }
         return task;
@@ -162,31 +188,31 @@ public class Storage {
      * @throws HabpyDuckException if the saved line is malformed.
      */
     private void validateSavedTaskParts(String[] parts) throws HabpyDuckException {
-        if (parts.length < 2) {
+        if (parts.length < TYPE_AND_STATUS_FIELD_COUNT) {
             throw new HabpyDuckException("missing task type or status");
         }
-        if (!parts[1].equals("0") && !parts[1].equals("1")) {
+        if (!parts[STATUS_INDEX].equals(NOT_DONE_STATUS) && !parts[STATUS_INDEX].equals(DONE_STATUS)) {
             throw new HabpyDuckException("status must be 0 or 1");
         }
 
         int expectedPartCount;
-        switch (parts[0]) {
-            case "T":
-                expectedPartCount = 3;
+        switch (parts[TASK_TYPE_INDEX]) {
+            case TODO_TASK_TYPE:
+                expectedPartCount = TODO_FIELD_COUNT;
                 break;
-            case "D":
-                expectedPartCount = 4;
+            case DEADLINE_TASK_TYPE:
+                expectedPartCount = DEADLINE_FIELD_COUNT;
                 break;
-            case "E":
-                expectedPartCount = 5;
+            case EVENT_TASK_TYPE:
+                expectedPartCount = EVENT_FIELD_COUNT;
                 break;
             default:
-                throw new HabpyDuckException("unknown task type '" + parts[0] + "'");
+                throw new HabpyDuckException("unknown task type '" + parts[TASK_TYPE_INDEX] + "'");
         }
         if (parts.length != expectedPartCount) {
             throw new HabpyDuckException("expected " + expectedPartCount + " fields but found " + parts.length);
         }
-        for (int i = 2; i < parts.length; i++) {
+        for (int i = TASK_DESCRIPTION_INDEX; i < parts.length; i++) {
             if (unescapeFileField(parts[i]).isBlank()) {
                 throw new HabpyDuckException("task details cannot be empty");
             }

@@ -21,7 +21,15 @@ import habpyduck.task.Todo;
  * Makes sense of raw command text entered by the user.
  */
 public class Parser {
+    private static final int MAX_COMMAND_WORD_SPLIT_PARTS = 2;
+    private static final String BY_MARKER = " /by ";
+    private static final String DEADLINE_COMMAND_PREFIX = "deadline ";
+    private static final String EVENT_COMMAND_PREFIX = "event ";
+    private static final String FIND_COMMAND_PREFIX = "find ";
+    private static final String FROM_MARKER = " /from ";
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final String TODO_COMMAND_PREFIX = "todo ";
+    private static final String TO_MARKER = " /to ";
     private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
             + "Try todo, deadline, event, list, mark, unmark, delete, or find!";
 
@@ -33,7 +41,7 @@ public class Parser {
      */
     public CommandType getCommandType(String command) {
         String trimmedCommand = command.trim();
-        String commandWord = trimmedCommand.split(" ", 2)[0];
+        String commandWord = trimmedCommand.split(" ", MAX_COMMAND_WORD_SPLIT_PARTS)[0];
         return CommandType.fromCommandWord(commandWord);
     }
 
@@ -141,7 +149,9 @@ public class Parser {
      * @throws HabpyDuckException if the description is blank.
      */
     private String parseTodoDescription(String command) throws HabpyDuckException {
-        String description = command.length() > 4 ? command.substring(5).trim() : "";
+        String description = command.length() > TODO_COMMAND_PREFIX.length()
+                ? command.substring(TODO_COMMAND_PREFIX.length()).trim()
+                : "";
         return requireText(description,
                 "OH NO!!! A todo needs a description, friend. Try something like: todo read book");
     }
@@ -154,7 +164,9 @@ public class Parser {
      * @throws HabpyDuckException if the keyword is blank.
      */
     private String parseFindKeyword(String command) throws HabpyDuckException {
-        String keyword = command.length() > 4 ? command.substring(5).trim() : "";
+        String keyword = command.length() > FIND_COMMAND_PREFIX.length()
+                ? command.substring(FIND_COMMAND_PREFIX.length()).trim()
+                : "";
         return requireText(keyword,
                 "OH NO!!! Please tell me what keyword to find, like: find book");
     }
@@ -167,8 +179,10 @@ public class Parser {
      * @throws HabpyDuckException if the command is missing required parts.
      */
     private Deadline parseDeadline(String command) throws HabpyDuckException {
-        String taskDetails = command.length() > 8 ? command.substring(9) : "";
-        int byIndex = taskDetails.indexOf(" /by ");
+        String taskDetails = command.length() > DEADLINE_COMMAND_PREFIX.length()
+                ? command.substring(DEADLINE_COMMAND_PREFIX.length())
+                : "";
+        int byIndex = taskDetails.indexOf(BY_MARKER);
         if (byIndex == -1) {
             throw new HabpyDuckException(
                     "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)");
@@ -176,7 +190,7 @@ public class Parser {
 
         String description = requireText(taskDetails.substring(0, byIndex).trim(),
                 "OH NO!!! A deadline needs a description, friend. Try again!");
-        String by = requireText(taskDetails.substring(byIndex + 5).trim(),
+        String by = requireText(taskDetails.substring(byIndex + BY_MARKER.length()).trim(),
                 "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
         return new Deadline(description, parseUserDeadlineDateTime(by));
     }
@@ -189,9 +203,11 @@ public class Parser {
      * @throws HabpyDuckException if the command is missing required parts.
      */
     private Event parseEvent(String command) throws HabpyDuckException {
-        String taskDetails = command.length() > 5 ? command.substring(6) : "";
-        int fromIndex = taskDetails.indexOf(" /from ");
-        int toIndex = taskDetails.indexOf(" /to ", fromIndex + 7);
+        String taskDetails = command.length() > EVENT_COMMAND_PREFIX.length()
+                ? command.substring(EVENT_COMMAND_PREFIX.length())
+                : "";
+        int fromIndex = taskDetails.indexOf(FROM_MARKER);
+        int toIndex = taskDetails.indexOf(TO_MARKER, fromIndex + FROM_MARKER.length());
         if (fromIndex == -1 || toIndex == -1) {
             throw new HabpyDuckException(
                     "OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)");
@@ -200,9 +216,9 @@ public class Parser {
 
         String description = requireText(taskDetails.substring(0, fromIndex).trim(),
                 "OH NO!!! An event needs a description, friend. Try again!");
-        String from = requireText(taskDetails.substring(fromIndex + 7, toIndex).trim(),
+        String from = requireText(taskDetails.substring(fromIndex + FROM_MARKER.length(), toIndex).trim(),
                 "OH NO!!! An event needs a start time, friend. Try again!");
-        String to = requireText(taskDetails.substring(toIndex + 5).trim(),
+        String to = requireText(taskDetails.substring(toIndex + TO_MARKER.length()).trim(),
                 "OH NO!!! An event needs an end time, friend. Try again!");
         return new Event(description, from, to);
     }
