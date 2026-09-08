@@ -97,6 +97,30 @@ public class TaskList {
     }
 
     /**
+     * Adds a tag to the task at the given zero-based index.
+     *
+     * @param taskIndex the index of the task to tag.
+     * @param tag the normalized tag to add.
+     * @return true if the tag was added.
+     */
+    public boolean addTag(int taskIndex, String tag) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before tagging a task";
+        return tasks.get(taskIndex).addTag(tag);
+    }
+
+    /**
+     * Removes a tag from the task at the given zero-based index.
+     *
+     * @param taskIndex the index of the task to untag.
+     * @param tag the normalized tag to remove.
+     * @return true if the tag was removed.
+     */
+    public boolean removeTag(int taskIndex, String tag) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before untagging a task";
+        return tasks.get(taskIndex).removeTag(tag);
+    }
+
+    /**
      * Returns tasks whose descriptions contain the given keyword.
      *
      * @param keyword the text to search for in task descriptions.
@@ -106,6 +130,19 @@ public class TaskList {
         String lowerCaseKeyword = keyword.toLowerCase();
         return tasks.stream()
                 .filter(task -> task.getDescription().toLowerCase().contains(lowerCaseKeyword))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Returns tasks that have the given tag.
+     *
+     * @param tag the normalized tag to search for.
+     * @return tasks with the given tag.
+     */
+    public ArrayList<Task> findByTag(String tag) {
+        assert Task.isValidTag(tag) : "Tag should be validated before searching by tag";
+        return tasks.stream()
+                .filter(task -> task.hasTag(tag))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

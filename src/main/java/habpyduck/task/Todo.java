@@ -23,7 +23,8 @@ public class Todo extends Task {
     @Override
     public String toFileString() {
         return Storage.TODO_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
-                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description);
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
+                + formatTagsForFile();
     }
 
     /**

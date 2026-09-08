@@ -181,7 +181,7 @@ ____________________________________________________________
 ____________________________________________________________
 OH NO!!! I had trouble loading saved task on line 2: status must be 0 or 1
 OH NO!!! I had trouble loading saved task on line 3: unknown task type 'X'
-OH NO!!! I had trouble loading saved task on line 4: expected 4 fields but found 3
+OH NO!!! I had trouble loading saved task on line 4: expected 4 or 5 fields but found 3
 OH NO!!! I had trouble loading saved task on line 5: saved deadline date and time must use yyyy-MM-ddTHH:mm format
 OH NO!!! I had trouble loading saved task on line 7: task details cannot be empty
 Here are the tasks in your list:
@@ -453,7 +453,7 @@ ____________________________________________________________
 OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, or find!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -627,7 +627,7 @@ ____________________________________________________________
 OH NO!!! A todo needs a description, friend. Try something like: todo read book
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, or find!
+OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Please tell me which task to mark, like: mark 2
@@ -745,4 +745,105 @@ ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
 ____________________________________________________________
+```
+
+## Test Case: tag, untag, and find tagged tasks
+
+### Aim
+
+Verify that the chatbot can add multiple tags to a task, normalize tags to lowercase, avoid duplicate tags, remove tags, find tasks by tag, and reject invalid tag formats.
+
+### Inputs
+
+```text
+todo read book
+deadline return book /by 6/6/2019 0900
+tag 1 #Fun #school_work
+tag 1 #fun
+tag 2 fun
+tag abc #fun
+find book
+findtag #fun
+untag 1 #fun
+findtag #fun
+findtag #school_work
+untag 1 #missing
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ _   _       _                 ____             _    
+| | | | __ _| |__  _ __  _   _|  _ \ _   _  ___| | __
+| |_| |/ _` | '_ \| '_ \| | | | | | | | | |/ __| |/ /
+|  _  | (_| | |_) | |_) | |_| | |_| | |_| | (__|   < 
+|_| |_|\__,_|_.__/| .__/ \__, |____/ \__,_|\___|_|\_\
+                  |_|    |___/                       
+Hi friend! I'm HabpyDuck.
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Jun 6 2019, 9:00am)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've tagged this task:
+  [T][ ] read book #fun #school_work
+____________________________________________________________
+____________________________________________________________
+OH NO!!! This task already has those tag(s).
+____________________________________________________________
+____________________________________________________________
+OH NO!!! Tags must start with # and use only letters, numbers, hyphens, or underscores. Try something like: tag 2 #fun
+____________________________________________________________
+____________________________________________________________
+OH NO!!! Please use a number after tag, like: tag 2
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book #fun #school_work
+2.[D][ ] return book (by: Jun 6 2019, 9:00am)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks with that tag:
+1.[T][ ] read book #fun #school_work
+____________________________________________________________
+____________________________________________________________
+Got it. I've removed that tag from this task:
+  [T][ ] read book #school_work
+____________________________________________________________
+____________________________________________________________
+Here are the tasks with that tag:
+____________________________________________________________
+____________________________________________________________
+Here are the tasks with that tag:
+1.[T][ ] read book #school_work
+____________________________________________________________
+____________________________________________________________
+OH NO!!! This task does not have that tag.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book #school_work
+2.[D][ ] return book (by: Jun 6 2019, 9:00am)
+____________________________________________________________
+____________________________________________________________
+Bye friend. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Expected saved file content
+
+```text
+T | 0 | read book | #school_work
+D | 0 | return book | 2019-06-06T09:00
 ```

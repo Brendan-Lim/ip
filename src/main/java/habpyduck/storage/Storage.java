@@ -41,6 +41,7 @@ public class Storage {
     private static final int EVENT_START_INDEX = 3;
     private static final String FILE_FIELD_SEPARATOR_REGEX = " \\| ";
     private static final int STATUS_INDEX = 1;
+    private static final String TAG_SEPARATOR = ",";
     private static final int TASK_DESCRIPTION_INDEX = 2;
     private static final int TASK_TYPE_INDEX = 0;
     private static final int TODO_FIELD_COUNT = 3;
@@ -138,18 +139,21 @@ public class Storage {
         Task task;
         switch (parts[TASK_TYPE_INDEX]) {
             case DEADLINE_TASK_TYPE:
-                assert parts.length == DEADLINE_FIELD_COUNT : "Validated deadline should have exactly 4 fields";
+                assert parts.length == DEADLINE_FIELD_COUNT || parts.length == DEADLINE_FIELD_COUNT + 1
+                        : "Validated deadline should have expected fields";
                 task = new Deadline(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]),
                         parseSavedDeadlineDateTime(unescapeFileField(parts[DEADLINE_DATE_TIME_INDEX])));
                 break;
             case EVENT_TASK_TYPE:
-                assert parts.length == EVENT_FIELD_COUNT : "Validated event should have exactly 5 fields";
+                assert parts.length == EVENT_FIELD_COUNT || parts.length == EVENT_FIELD_COUNT + 1
+                        : "Validated event should have expected fields";
                 task = new Event(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]),
                         unescapeFileField(parts[EVENT_START_INDEX]),
                         unescapeFileField(parts[EVENT_END_INDEX]));
                 break;
             case TODO_TASK_TYPE:
-                assert parts.length == TODO_FIELD_COUNT : "Validated todo should have exactly 3 fields";
+                assert parts.length == TODO_FIELD_COUNT || parts.length == TODO_FIELD_COUNT + 1
+                        : "Validated todo should have expected fields";
                 task = new Todo(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]));
                 break;
             default:
@@ -159,6 +163,7 @@ public class Storage {
         if (parts[STATUS_INDEX].equals(DONE_STATUS)) {
             task.markAsDone();
         }
+        loadTags(task, parts);
         return task;
     }
 
@@ -209,13 +214,87 @@ public class Storage {
             default:
                 throw new HabpyDuckException("unknown task type '" + parts[TASK_TYPE_INDEX] + "'");
         }
-        if (parts.length != expectedPartCount) {
-            throw new HabpyDuckException("expected " + expectedPartCount + " fields but found " + parts.length);
+        if (parts.length != expectedPartCount && parts.length != expectedPartCount + 1) {
+            throw new HabpyDuckException("expected " + expectedPartCount + " or " + (expectedPartCount + 1)
+                    + " fields but found " + parts.length);
         }
-        for (int i = TASK_DESCRIPTION_INDEX; i < parts.length; i++) {
+        for (int i = TASK_DESCRIPTION_INDEX; i < expectedPartCount; i++) {
             if (unescapeFileField(parts[i]).isBlank()) {
                 throw new HabpyDuckException("task details cannot be empty");
             }
+        }
+        validateSavedTags(parts, expectedPartCount);
+    }
+
+    /**
+     * Loads saved tags into a task if the saved line has a tag field.
+     *
+     * @param task the task to tag.
+     * @param parts the saved line split into fields.
+     * @throws HabpyDuckException if the tag field is malformed.
+     */
+    private void loadTags(Task task, String[] parts) throws HabpyDuckException {
+        int tagFieldIndex = getExpectedPartCount(parts[TASK_TYPE_INDEX]);
+        if (parts.length == tagFieldIndex) {
+            return;
+        }
+
+        String[] savedTags = parts[tagFieldIndex].split(TAG_SEPARATOR, -1);
+        for (String savedTag : savedTags) {
+            task.addTag(parseSavedTag(savedTag));
+        }
+    }
+
+    /**
+     * Checks the optional saved tag field.
+     *
+     * @param parts the saved line split into fields.
+     * @param expectedPartCount the field count for an untagged task of the same type.
+     * @throws HabpyDuckException if the tag field is malformed.
+     */
+    private void validateSavedTags(String[] parts, int expectedPartCount) throws HabpyDuckException {
+        if (parts.length == expectedPartCount) {
+            return;
+        }
+
+        String[] savedTags = parts[expectedPartCount].split(TAG_SEPARATOR, -1);
+        for (String savedTag : savedTags) {
+            parseSavedTag(savedTag);
+        }
+    }
+
+    /**
+     * Converts saved tag text into a normalized tag.
+     *
+     * @param savedTag the saved tag text.
+     * @return the normalized tag.
+     * @throws HabpyDuckException if the saved tag is malformed.
+     */
+    private String parseSavedTag(String savedTag) throws HabpyDuckException {
+        String tag = Task.normalizeTag(unescapeFileField(savedTag));
+        if (!Task.isValidTag(tag)) {
+            throw new HabpyDuckException("saved tags must start with # and use valid tag characters");
+        }
+        return tag;
+    }
+
+    /**
+     * Returns the field count for an untagged saved task of the given type.
+     *
+     * @param taskType the saved task type.
+     * @return the expected field count.
+     */
+    private int getExpectedPartCount(String taskType) {
+        switch (taskType) {
+            case TODO_TASK_TYPE:
+                return TODO_FIELD_COUNT;
+            case DEADLINE_TASK_TYPE:
+                return DEADLINE_FIELD_COUNT;
+            case EVENT_TASK_TYPE:
+                return EVENT_FIELD_COUNT;
+            default:
+                assert false : "Task type should be validated before resolving field count";
+                return TODO_FIELD_COUNT;
         }
     }
 

@@ -3,6 +3,7 @@ package habpyduck.parser;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 import habpyduck.HabpyDuckException;
 import habpyduck.command.AddCommand;
@@ -10,11 +11,15 @@ import habpyduck.command.Command;
 import habpyduck.command.DeleteCommand;
 import habpyduck.command.ExitCommand;
 import habpyduck.command.FindCommand;
+import habpyduck.command.FindTagCommand;
 import habpyduck.command.ListCommand;
 import habpyduck.command.MarkCommand;
+import habpyduck.command.TagCommand;
 import habpyduck.command.UnmarkCommand;
+import habpyduck.command.UntagCommand;
 import habpyduck.task.Deadline;
 import habpyduck.task.Event;
+import habpyduck.task.Task;
 import habpyduck.task.Todo;
 
 /**
@@ -26,12 +31,18 @@ public class Parser {
     private static final String DEADLINE_COMMAND_PREFIX = "deadline ";
     private static final String EVENT_COMMAND_PREFIX = "event ";
     private static final String FIND_COMMAND_PREFIX = "find ";
+    private static final String FINDTAG_COMMAND_PREFIX = "findtag ";
     private static final String FROM_MARKER = " /from ";
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final int TASK_NUMBER_INDEX = 0;
+    private static final int FIRST_TAG_INDEX = 1;
+    private static final int UNTAG_PART_COUNT = 2;
+    private static final String TAG_COMMAND_PREFIX = "tag ";
     private static final String TODO_COMMAND_PREFIX = "todo ";
     private static final String TO_MARKER = " /to ";
+    private static final String UNTAG_COMMAND_PREFIX = "untag ";
     private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
-            + "Try todo, deadline, event, list, mark, unmark, delete, or find!";
+            + "Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!";
 
     /**
      * Finds the command type for the user's input.
@@ -64,6 +75,12 @@ public class Parser {
                 return new DeleteCommand(parseTaskNumber(command, "delete"));
             case FIND:
                 return new FindCommand(parseFindKeyword(command));
+            case FINDTAG:
+                return new FindTagCommand(parseFindTag(command));
+            case TAG:
+                return parseTagCommand(command);
+            case UNTAG:
+                return parseUntagCommand(command);
             case TODO:
                 return new AddCommand(new Todo(parseTodoDescription(command)));
             case DEADLINE:
@@ -133,12 +150,42 @@ public class Parser {
                     + commandWord + " 2");
         }
 
+        return parseTaskNumberText(taskNumberText, commandWord);
+    }
+
+    /**
+     * Converts task number text into an integer.
+     *
+     * @param taskNumberText the task number text entered by the user.
+     * @param commandWord the command word, such as mark, tag, or untag.
+     * @return the task number entered by the user.
+     * @throws HabpyDuckException if the task number is not a number.
+     */
+    private int parseTaskNumberText(String taskNumberText, String commandWord) throws HabpyDuckException {
         try {
             return Integer.parseInt(taskNumberText);
         } catch (NumberFormatException e) {
             throw new HabpyDuckException("OH NO!!! Please use a number after " + commandWord + ", like: "
                     + commandWord + " 2");
         }
+    }
+
+    /**
+     * Converts tag text into a normalized tag.
+     *
+     * @param tagText the tag text entered by the user.
+     * @param exampleCommand an example command to include in the error message.
+     * @return the normalized tag.
+     * @throws HabpyDuckException if the tag is missing or has invalid characters.
+     */
+    private String parseSingleTag(String tagText, String exampleCommand) throws HabpyDuckException {
+        String tag = Task.normalizeTag(requireText(tagText,
+                "OH NO!!! Please tell me which tag to use, like: " + exampleCommand));
+        if (!Task.isValidTag(tag)) {
+            throw new HabpyDuckException("OH NO!!! Tags must start with # and use only letters, numbers, "
+                    + "hyphens, or underscores. Try something like: " + exampleCommand);
+        }
+        return tag;
     }
 
     /**
@@ -169,6 +216,65 @@ public class Parser {
                 : "";
         return requireText(keyword,
                 "OH NO!!! Please tell me what keyword to find, like: find book");
+    }
+
+    /**
+     * Extracts and validates the tag from a findtag command.
+     *
+     * @param command the full findtag command.
+     * @return the normalized tag to search for.
+     * @throws HabpyDuckException if the tag is missing or invalid.
+     */
+    private String parseFindTag(String command) throws HabpyDuckException {
+        String tag = command.length() > FINDTAG_COMMAND_PREFIX.length()
+                ? command.substring(FINDTAG_COMMAND_PREFIX.length()).trim()
+                : "";
+        return parseSingleTag(tag, "findtag #fun");
+    }
+
+    /**
+     * Creates a tag command from user input.
+     *
+     * @param command the full tag command.
+     * @return the command represented by the input.
+     * @throws HabpyDuckException if the task number or tags are missing or invalid.
+     */
+    private TagCommand parseTagCommand(String command) throws HabpyDuckException {
+        String commandDetails = command.length() > TAG_COMMAND_PREFIX.length()
+                ? command.substring(TAG_COMMAND_PREFIX.length()).trim()
+                : "";
+        String[] parts = commandDetails.split("\\s+");
+        if (commandDetails.isBlank() || parts.length < 2) {
+            throw new HabpyDuckException("OH NO!!! Please use this format for tags: tag TASK_NUMBER #TAG...");
+        }
+
+        int taskNumber = parseTaskNumberText(parts[TASK_NUMBER_INDEX], "tag");
+        ArrayList<String> tags = new ArrayList<>();
+        for (int i = FIRST_TAG_INDEX; i < parts.length; i++) {
+            tags.add(parseSingleTag(parts[i], "tag 2 #fun"));
+        }
+        return new TagCommand(taskNumber, tags);
+    }
+
+    /**
+     * Creates an untag command from user input.
+     *
+     * @param command the full untag command.
+     * @return the command represented by the input.
+     * @throws HabpyDuckException if the task number or tag is missing or invalid.
+     */
+    private UntagCommand parseUntagCommand(String command) throws HabpyDuckException {
+        String commandDetails = command.length() > UNTAG_COMMAND_PREFIX.length()
+                ? command.substring(UNTAG_COMMAND_PREFIX.length()).trim()
+                : "";
+        String[] parts = commandDetails.split("\\s+");
+        if (commandDetails.isBlank() || parts.length != UNTAG_PART_COUNT) {
+            throw new HabpyDuckException("OH NO!!! Please use this format for untagging: untag TASK_NUMBER #TAG");
+        }
+
+        int taskNumber = parseTaskNumberText(parts[TASK_NUMBER_INDEX], "untag");
+        String tag = parseSingleTag(parts[FIRST_TAG_INDEX], "untag 2 #fun");
+        return new UntagCommand(taskNumber, tag);
     }
 
     /**
