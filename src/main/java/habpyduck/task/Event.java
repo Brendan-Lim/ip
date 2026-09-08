@@ -29,8 +29,10 @@ public class Event extends Task {
      */
     @Override
     public String toFileString() {
-        return "E | " + getDoneStatus() + " | " + Storage.escapeFileField(description)
-                + " | " + Storage.escapeFileField(from) + " | " + Storage.escapeFileField(to);
+        return Storage.EVENT_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(from)
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(to);
     }
 
     /**

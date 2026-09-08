@@ -33,8 +33,9 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileString() {
-        return "D | " + getDoneStatus() + " | " + Storage.escapeFileField(description)
-                + " | " + by;
+        return Storage.DEADLINE_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
+                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
+                + Storage.FILE_FIELD_SEPARATOR + by;
     }
 
     /**
