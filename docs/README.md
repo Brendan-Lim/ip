@@ -1,30 +1,173 @@
-# Duke User Guide
+# HabpyDuck User Guide
 
-// Update the title above to match the actual product name
+HabpyDuck is a task-tracking chatbot that helps you remember todos, deadlines, and events.
 
-// Product screenshot goes here
+## Quick Start
 
-// Product intro goes here
+1. Launch HabpyDuck.
+2. Type a command in the input box or console.
+3. Press Enter to run the command.
 
-## Adding deadlines
+## Command Summary
 
-// Describe the action and its outcome.
+| Action | Format |
+| --- | --- |
+| Add a todo | `todo DESCRIPTION` |
+| Add a deadline | `deadline DESCRIPTION /by DD/MM/YYYY HHmm` |
+| Add an event | `event DESCRIPTION /from START /to END` |
+| List tasks | `list` |
+| Mark a task as done | `mark TASK_NUMBER` |
+| Mark a task as not done | `unmark TASK_NUMBER` |
+| Delete a task | `delete TASK_NUMBER` |
+| Find matching tasks | `find KEYWORD` |
+| Exit | `bye` |
 
-// Give examples of usage
+## Adding Todos
 
-Example: `keyword (optional arguments)`
+Adds a task without a date or time.
 
-// A description of the expected outcome goes here
+Example:
 
+```text
+todo read book
 ```
-expected output
+
+Expected output:
+
+```text
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
 ```
 
-## Feature ABC
+## Adding Deadlines
 
-// Feature details
+Adds a task that must be completed by a specific date and time. Use `DD/MM/YYYY HHmm` format for the date and time.
 
+Example:
 
-## Feature XYZ
+```text
+deadline return book /by 25/8/2026 1800
+```
 
-// Feature details
+Expected output:
+
+```text
+Got it. I've added this task:
+  [D][ ] return book (by: Aug 25 2026, 6:00pm)
+Now you have 2 tasks in the list.
+```
+
+## Adding Events
+
+Adds a task that starts and ends at given times.
+
+Example:
+
+```text
+event project meeting /from Mon 2pm /to 4pm
+```
+
+Expected output:
+
+```text
+Got it. I've added this task:
+  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+Now you have 3 tasks in the list.
+```
+
+## Listing Tasks
+
+Shows all saved tasks.
+
+Example:
+
+```text
+list
+```
+
+Expected output:
+
+```text
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
+3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+```
+
+## Marking And Unmarking Tasks
+
+Marks a task as done or not done. Task numbers are shown by the `list` command.
+
+Examples:
+
+```text
+mark 1
+unmark 1
+```
+
+Expected output for `mark 1`:
+
+```text
+YAY GOOD JOB!!! I've marked this task as done:
+  [T][X] read book
+```
+
+Expected output for `unmark 1`:
+
+```text
+OK, I've marked this task as not done yet, all the best friend:
+  [T][ ] read book
+```
+
+## Deleting Tasks
+
+Removes a task from the list. Task numbers are shown by the `list` command.
+
+Example:
+
+```text
+delete 1
+```
+
+Expected output:
+
+```text
+Noted. I've removed this task:
+  [T][ ] read book
+Now you have 2 tasks in the list.
+```
+
+## Finding Tasks
+
+Shows tasks whose descriptions contain the keyword. The search is case-insensitive.
+
+Example:
+
+```text
+find book
+```
+
+Expected output:
+
+```text
+Here are the matching tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
+```
+
+## Exiting
+
+Ends the current HabpyDuck session.
+
+Example:
+
+```text
+bye
+```
+
+Expected output:
+
+```text
+Bye friend. Hope to see you again soon!
+```
