@@ -87,7 +87,8 @@ public class Parser {
             return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
         } catch (DateTimeParseException e) {
             throw new HabpyDuckException(
-                    "OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800");
+                    "OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, "
+                            + "like: 25/8/2026 1800");
         }
     }
 
