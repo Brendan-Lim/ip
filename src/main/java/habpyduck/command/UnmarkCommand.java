@@ -35,6 +35,8 @@ public class UnmarkCommand extends Command {
         try {
             storage.saveTasks(tasks.asList());
         } catch (HabpyDuckException e) {
+            assert taskIndex >= 0 && taskIndex < tasks.size()
+                    : "Unmarked task should still exist so the status change can be rolled back";
             tasks.markAsDone(taskIndex);
             throw e;
         }

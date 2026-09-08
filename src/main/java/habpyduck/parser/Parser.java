@@ -196,6 +196,7 @@ public class Parser {
             throw new HabpyDuckException(
                     "OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)");
         }
+        assert fromIndex < toIndex : "Event start marker should appear before end marker";
 
         String description = requireText(taskDetails.substring(0, fromIndex).trim(),
                 "OH NO!!! An event needs a description, friend. Try again!");

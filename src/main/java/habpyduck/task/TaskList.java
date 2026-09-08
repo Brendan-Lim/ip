@@ -49,6 +49,7 @@ public class TaskList {
      * @return the removed task.
      */
     public Task removeLast() {
+        assert !tasks.isEmpty() : "Task list should not be empty when removing the last task";
         return tasks.remove(tasks.size() - 1);
     }
 
@@ -59,6 +60,7 @@ public class TaskList {
      * @return the removed task.
      */
     public Task delete(int taskIndex) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before deleting a task";
         return tasks.remove(taskIndex);
     }
 
@@ -69,6 +71,7 @@ public class TaskList {
      * @param task the task to insert.
      */
     public void insert(int taskIndex, Task task) {
+        assert taskIndex >= 0 && taskIndex <= tasks.size() : "Task index should be valid before inserting a task";
         tasks.add(taskIndex, task);
     }
 
@@ -78,6 +81,7 @@ public class TaskList {
      * @param taskIndex the index of the task to mark.
      */
     public void markAsDone(int taskIndex) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before marking a task";
         tasks.get(taskIndex).markAsDone();
     }
 
@@ -87,6 +91,7 @@ public class TaskList {
      * @param taskIndex the index of the task to unmark.
      */
     public void markAsNotDone(int taskIndex) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before unmarking a task";
         tasks.get(taskIndex).markAsNotDone();
     }
 
@@ -114,6 +119,7 @@ public class TaskList {
      * @return the requested task.
      */
     public Task get(int taskIndex) {
+        assert isValidIndex(taskIndex) : "Task index should be valid before retrieving a task";
         return tasks.get(taskIndex);
     }
 
@@ -133,5 +139,15 @@ public class TaskList {
      */
     public ArrayList<Task> asList() {
         return new ArrayList<>(tasks);
+    }
+
+    /**
+     * Returns whether an index points to an existing task.
+     *
+     * @param taskIndex the zero-based index to check.
+     * @return true if the index points to a task in the list.
+     */
+    private boolean isValidIndex(int taskIndex) {
+        return taskIndex >= 0 && taskIndex < tasks.size();
     }
 }
