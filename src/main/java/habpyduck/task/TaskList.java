@@ -1,6 +1,7 @@
 package habpyduck.task;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Stores the user's tasks and provides operations for changing the task list.
@@ -102,14 +103,10 @@ public class TaskList {
      * @return tasks with descriptions that contain the keyword.
      */
     public ArrayList<Task> findByKeyword(String keyword) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
         String lowerCaseKeyword = keyword.toLowerCase();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerCaseKeyword)) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerCaseKeyword))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
