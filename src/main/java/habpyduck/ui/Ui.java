@@ -114,10 +114,7 @@ public class Ui {
      * @param tasks the tasks to show.
      */
     public void showTaskList(ArrayList<Task> tasks) {
-        output.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            output.println((i + 1) + "." + tasks.get(i));
-        }
+        showNumberedTasks("Here are the tasks in your list:", tasks);
     }
 
     /**
@@ -126,7 +123,17 @@ public class Ui {
      * @param tasks the matching tasks to show.
      */
     public void showMatchingTasks(ArrayList<Task> tasks) {
-        output.println("Here are the matching tasks in your list:");
+        showNumberedTasks("Here are the matching tasks in your list:", tasks);
+    }
+
+    /**
+     * Prints a header followed by a numbered task list.
+     *
+     * @param header the heading shown before the tasks.
+     * @param tasks the tasks to show.
+     */
+    private void showNumberedTasks(String header, ArrayList<Task> tasks) {
+        output.println(header);
         for (int i = 0; i < tasks.size(); i++) {
             output.println((i + 1) + "." + tasks.get(i));
         }
