@@ -1,5 +1,6 @@
 package habpyduck.parser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -36,6 +37,7 @@ public class Parser {
     private static final Pattern BY_MARKER_PATTERN = Pattern.compile("(?<!\\S)/by(?!\\S)");
     private static final Pattern FROM_MARKER_PATTERN = Pattern.compile("(?<!\\S)/from(?!\\S)");
     private static final Pattern TO_MARKER_PATTERN = Pattern.compile("(?<!\\S)/to(?!\\S)");
+    private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy");
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private static final int TASK_NUMBER_INDEX = 0;
     private static final int FIRST_TAG_INDEX = 1;
@@ -107,15 +109,19 @@ public class Parser {
      *
      * @param dateTimeText the date and time entered by the user.
      * @return the parsed date and time.
-     * @throws HabpyDuckException if the date and time is not in d/M/yyyy HHmm format.
+     * @throws HabpyDuckException if the deadline is not in d/M/yyyy or d/M/yyyy HHmm format.
      */
     public LocalDateTime parseUserDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
         try {
             return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
-        } catch (DateTimeParseException e) {
-            throw new HabpyDuckException(
-                    "OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, "
-                            + "like: 25/8/2026 1800");
+        } catch (DateTimeParseException dateTimeError) {
+            try {
+                return LocalDate.parse(dateTimeText, INPUT_DATE_FORMAT).atStartOfDay();
+            } catch (DateTimeParseException dateError) {
+                throw new HabpyDuckException(
+                        "OH NO!!! Please enter the deadline date in DD/MM/YYYY format, "
+                                + "or include time like: 25/8/2026 1800");
+            }
         }
     }
 
@@ -293,7 +299,8 @@ public class Parser {
         ArrayList<MarkerMatch> byMarkers = findMarkers(taskDetails, BY_MARKER_PATTERN);
         if (byMarkers.isEmpty()) {
             throw new HabpyDuckException(
-                    "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)");
+                    "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY "
+                            + "or DD/MM/YYYY HHmm :)");
         }
         if (byMarkers.size() > 1) {
             throw new HabpyDuckException(
@@ -304,7 +311,7 @@ public class Parser {
         String description = requireText(taskDetails.substring(0, byMarker.getStartIndex()).trim(),
                 "OH NO!!! A deadline needs a description, friend. Try again!");
         String by = requireText(taskDetails.substring(byMarker.getEndIndex()).trim(),
-                "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
+                "OH NO!!! A deadline needs a date, friend. Try something like: 25/8/2026");
         return new Deadline(description, parseUserDeadlineDateTime(by));
     }
 

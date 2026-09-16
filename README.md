@@ -13,7 +13,7 @@ HabpyDuck is a task-tracking chatbot that helps you remember todos, deadlines, a
 | Action | Format |
 | --- | --- |
 | Add a todo | `todo DESCRIPTION` |
-| Add a deadline | `deadline DESCRIPTION /by DD/MM/YYYY HHmm` |
+| Add a deadline | `deadline DESCRIPTION /by DD/MM/YYYY [HHmm]` |
 | Add an event | `event DESCRIPTION /from START /to END` |
 | List tasks | `list` |
 | Mark a task as done | `mark TASK_NUMBER` |
@@ -45,7 +45,8 @@ Now you have 1 tasks in the list.
 
 ## Adding Deadlines
 
-Adds a task that must be completed by a specific date and time. Use `DD/MM/YYYY HHmm` format for the date and time.
+Adds a task that must be completed by a specific date. Use `DD/MM/YYYY` format, or add a time using
+`DD/MM/YYYY HHmm`.
 
 Example:
 
@@ -57,7 +58,7 @@ Expected output:
 
 ```text
 Got it, friend. I've added this task:
-  [D][ ] return book (by: Aug 25 2026, 6:00pm)
+  [D][ ] return book (by: 25/8/2026 1800)
 Now you have 2 tasks in the list.
 ```
 
@@ -94,13 +95,14 @@ Expected output:
 ```text
 Here are the tasks in your list, friend:
 1.[T][ ] read book
-2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
+2.[D][ ] return book (by: 25/8/2026 1800)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ```
 
 ## Marking And Unmarking Tasks
 
 Marks a task as done or not done. Task numbers are shown by the `list` command.
+If a task is already in the requested status, HabpyDuck will remind you instead of changing the list.
 
 Examples:
 
@@ -156,7 +158,7 @@ Expected output:
 ```text
 I found these matching tasks for you, friend:
 1.[T][ ] read book
-2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
+2.[D][ ] return book (by: 25/8/2026 1800)
 ```
 
 ## Tagging Tasks

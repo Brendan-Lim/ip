@@ -31,8 +31,8 @@ public class ParserTest {
             + "Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!";
     private static final String INVALID_TAG_MESSAGE = "OH NO!!! Tags must start with # and use only letters, "
             + "numbers, hyphens, or underscores. Try something like: tag 2 #fun";
-    private static final String INVALID_DEADLINE_DATE_TIME_MESSAGE = "OH NO!!! Please enter the deadline date and "
-            + "time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800";
+    private static final String INVALID_DEADLINE_DATE_MESSAGE = "OH NO!!! Please enter the deadline date in "
+            + "DD/MM/YYYY format, or include time like: 25/8/2026 1800";
 
     private final Parser parser = new Parser();
 
@@ -79,6 +79,7 @@ public class ParserTest {
     @Test
     public void parse_validAddCommands_returnsAddCommand() throws HabpyDuckException {
         assertInstanceOf(AddCommand.class, parser.parse("todo read book"));
+        assertInstanceOf(AddCommand.class, parser.parse("deadline return book /by 25/8/2026"));
         assertInstanceOf(AddCommand.class, parser.parse("deadline return book /by 25/8/2026 1800"));
         assertInstanceOf(AddCommand.class, parser.parse("event meeting /from 2pm /to 4pm"));
     }
@@ -165,7 +166,8 @@ public class ParserTest {
     @Test
     public void parse_deadlineWithoutByMarker_exceptionThrown() {
         assertParseExceptionMessage("deadline return book",
-                "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)");
+                "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY "
+                        + "or DD/MM/YYYY HHmm :)");
     }
 
     @Test
@@ -177,7 +179,7 @@ public class ParserTest {
     @Test
     public void parse_deadlineWithoutDateTime_exceptionThrown() {
         assertParseExceptionMessage("deadline return book /by ",
-                "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
+                "OH NO!!! A deadline needs a date, friend. Try something like: 25/8/2026");
     }
 
     @Test
@@ -189,7 +191,7 @@ public class ParserTest {
     @Test
     public void parse_deadlineWithInvalidDateTime_exceptionThrown() {
         assertParseExceptionMessage("deadline return book /by 2026-08-25",
-                INVALID_DEADLINE_DATE_TIME_MESSAGE);
+                INVALID_DEADLINE_DATE_MESSAGE);
     }
 
     @Test
@@ -236,6 +238,13 @@ public class ParserTest {
     }
 
     @Test
+    public void parseUserDeadlineDateTime_validDateOnly_returnsStartOfDay() throws HabpyDuckException {
+        LocalDateTime expected = LocalDateTime.of(2026, 8, 25, 0, 0);
+
+        assertEquals(expected, parser.parseUserDeadlineDateTime("25/8/2026"));
+    }
+
+    @Test
     public void parseUserDeadlineDateTime_validSingleDigitDateAndTime_returnsLocalDateTime()
             throws HabpyDuckException {
         LocalDateTime expected = LocalDateTime.of(2026, 1, 5, 9, 30);
@@ -248,7 +257,7 @@ public class ParserTest {
         HabpyDuckException exception = assertThrows(
                 HabpyDuckException.class, () -> parser.parseUserDeadlineDateTime("2026-08-25 1800"));
 
-        assertEquals(INVALID_DEADLINE_DATE_TIME_MESSAGE, exception.getMessage());
+        assertEquals(INVALID_DEADLINE_DATE_MESSAGE, exception.getMessage());
     }
 
     @Test
@@ -256,7 +265,7 @@ public class ParserTest {
         HabpyDuckException exception = assertThrows(
                 HabpyDuckException.class, () -> parser.parseUserDeadlineDateTime("   "));
 
-        assertEquals(INVALID_DEADLINE_DATE_TIME_MESSAGE, exception.getMessage());
+        assertEquals(INVALID_DEADLINE_DATE_MESSAGE, exception.getMessage());
     }
 
     @Test

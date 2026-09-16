@@ -31,6 +31,10 @@ public class UnmarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws HabpyDuckException {
         int taskIndex = requireValidTaskIndex(taskNumber, tasks);
+        if (!tasks.get(taskIndex).isDone()) {
+            throw new HabpyDuckException("OH NO!!! This task is already unmarked, friend.");
+        }
+
         tasks.markAsNotDone(taskIndex);
         try {
             storage.saveTasks(tasks.asList());

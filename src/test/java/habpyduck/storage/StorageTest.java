@@ -77,7 +77,7 @@ public class StorageTest {
 
         assertEquals(3, tasks.size());
         assertEquals("[T][X] read book #fun #school", tasks.get(0).toString());
-        assertEquals("[D][ ] return book (by: Aug 25 2026, 6:00pm)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 25/8/2026 1800)", tasks.get(1).toString());
         assertEquals("[E][X] project meeting (from: Mon 2pm to: 4pm) #work", tasks.get(2).toString());
     }
 
@@ -94,7 +94,7 @@ public class StorageTest {
 
         assertEquals(3, tasks.size());
         assertEquals("[T][X] read book", tasks.get(0).toString());
-        assertEquals("[D][ ] return book (by: Aug 25 2026, 6:00pm)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 25/8/2026 1800)", tasks.get(1).toString());
         assertEquals("[E][X] project meeting (from: Mon 2pm to: 4pm)", tasks.get(2).toString());
     }
 
@@ -107,7 +107,7 @@ public class StorageTest {
         ArrayList<Task> tasks = storage.loadTasks();
 
         assertEquals(1, tasks.size());
-        assertEquals("[D][ ] return book (by: Aug 25 2026, 12:00am)", tasks.get(0).toString());
+        assertEquals("[D][ ] return book (by: 25/8/2026)", tasks.get(0).toString());
     }
 
     @Test

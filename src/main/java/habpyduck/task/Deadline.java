@@ -1,8 +1,8 @@
 package habpyduck.task;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import habpyduck.storage.Storage;
 
@@ -10,8 +10,8 @@ import habpyduck.storage.Storage;
  * Represents a task that needs to be done before a specific date or time.
  */
 public class Deadline extends Task {
-    private static final DateTimeFormatter DISPLAY_DATE_FORMAT =
-            DateTimeFormatter.ofPattern("MMM d yyyy, h:mma", Locale.ENGLISH);
+    private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     protected LocalDateTime by;
 
@@ -46,9 +46,9 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        String formattedDateTime = by.format(DISPLAY_DATE_FORMAT)
-                .replace("AM", "am")
-                .replace("PM", "pm");
+        String formattedDateTime = by.toLocalTime().equals(LocalTime.MIDNIGHT)
+                ? by.format(DISPLAY_DATE_FORMAT)
+                : by.format(DISPLAY_DATE_TIME_FORMAT);
         return "[D]" + getBaseDisplayText() + " (by: " + formattedDateTime + ")" + getDisplayTags();
     }
 }
