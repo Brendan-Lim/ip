@@ -14,6 +14,9 @@ import habpyduck.ui.Ui;
  * Entry point for the HabpyDuck chatbot.
  */
 public class HabpyDuck {
+    /** Response type used when the most recent command failed. */
+    public static final String ERROR_RESPONSE_TYPE = "Error";
+
     private final Parser parser;
     private final Storage storage;
     private final TaskList tasks;
@@ -72,7 +75,7 @@ public class HabpyDuck {
             }
             command.execute(tasks, responseUi, storage);
         } catch (HabpyDuckException e) {
-            commandType = "";
+            commandType = ERROR_RESPONSE_TYPE;
             responseUi.showError(e.getMessage());
         }
 
@@ -82,7 +85,7 @@ public class HabpyDuck {
     /**
      * Returns the command class name from the most recent successful command.
      *
-     * @return the most recent command class name, or an empty string if parsing failed.
+     * @return the most recent command class name, or {@link #ERROR_RESPONSE_TYPE} if the command failed.
      */
     public String getCommandType() {
         return commandType;

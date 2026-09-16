@@ -128,11 +128,11 @@ public class HabpyDuckTest {
     }
 
     @Test
-    public void getCommandType_invalidCommand_returnsEmptyString() {
+    public void getCommandType_invalidCommand_returnsErrorResponseType() {
         HabpyDuck habpyDuck = new HabpyDuck(new Storage(tempDir.resolve("tasks.txt").toString()));
 
         habpyDuck.getResponse("todo");
 
-        assertEquals("", habpyDuck.getCommandType());
+        assertEquals(HabpyDuck.ERROR_RESPONSE_TYPE, habpyDuck.getCommandType());
     }
 }

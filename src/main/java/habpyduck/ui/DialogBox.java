@@ -3,6 +3,7 @@ package habpyduck.ui;
 import java.io.IOException;
 import java.util.Objects;
 
+import habpyduck.HabpyDuck;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -100,6 +101,9 @@ public class DialogBox extends HBox {
         switch (commandType) {
             case "AddCommand":
                 message.getStyleClass().add("add-label");
+                break;
+            case HabpyDuck.ERROR_RESPONSE_TYPE:
+                message.getStyleClass().add("error-label");
                 break;
             case "MarkCommand":
                 message.getStyleClass().add("marked-label");
