@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import habpyduck.HabpyDuckException;
 import habpyduck.command.AddCommand;
@@ -27,19 +29,19 @@ import habpyduck.task.Todo;
  */
 public class Parser {
     private static final int MAX_COMMAND_WORD_SPLIT_PARTS = 2;
-    private static final String BY_MARKER = " /by ";
     private static final String DEADLINE_COMMAND_PREFIX = "deadline ";
     private static final String EVENT_COMMAND_PREFIX = "event ";
     private static final String FIND_COMMAND_PREFIX = "find ";
     private static final String FINDTAG_COMMAND_PREFIX = "findtag ";
-    private static final String FROM_MARKER = " /from ";
+    private static final Pattern BY_MARKER_PATTERN = Pattern.compile("(?<!\\S)/by(?!\\S)");
+    private static final Pattern FROM_MARKER_PATTERN = Pattern.compile("(?<!\\S)/from(?!\\S)");
+    private static final Pattern TO_MARKER_PATTERN = Pattern.compile("(?<!\\S)/to(?!\\S)");
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private static final int TASK_NUMBER_INDEX = 0;
     private static final int FIRST_TAG_INDEX = 1;
     private static final int UNTAG_PART_COUNT = 2;
     private static final String TAG_COMMAND_PREFIX = "tag ";
     private static final String TODO_COMMAND_PREFIX = "todo ";
-    private static final String TO_MARKER = " /to ";
     private static final String UNTAG_COMMAND_PREFIX = "untag ";
     private static final String UNKNOWN_COMMAND_MESSAGE = "OH NO!!! I don't understand that command friend :(. "
             + "Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!";
@@ -288,15 +290,20 @@ public class Parser {
         String taskDetails = command.length() > DEADLINE_COMMAND_PREFIX.length()
                 ? command.substring(DEADLINE_COMMAND_PREFIX.length())
                 : "";
-        int byIndex = taskDetails.indexOf(BY_MARKER);
-        if (byIndex == -1) {
+        ArrayList<MarkerMatch> byMarkers = findMarkers(taskDetails, BY_MARKER_PATTERN);
+        if (byMarkers.isEmpty()) {
             throw new HabpyDuckException(
                     "OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)");
         }
+        if (byMarkers.size() > 1) {
+            throw new HabpyDuckException(
+                    "OH NO!!! A deadline should have only one /by marker, friend.");
+        }
 
-        String description = requireText(taskDetails.substring(0, byIndex).trim(),
+        MarkerMatch byMarker = byMarkers.get(0);
+        String description = requireText(taskDetails.substring(0, byMarker.getStartIndex()).trim(),
                 "OH NO!!! A deadline needs a description, friend. Try again!");
-        String by = requireText(taskDetails.substring(byIndex + BY_MARKER.length()).trim(),
+        String by = requireText(taskDetails.substring(byMarker.getEndIndex()).trim(),
                 "OH NO!!! A deadline needs a date and time, friend. Try something like: 25/8/2026 1800");
         return new Deadline(description, parseUserDeadlineDateTime(by));
     }
@@ -312,21 +319,46 @@ public class Parser {
         String taskDetails = command.length() > EVENT_COMMAND_PREFIX.length()
                 ? command.substring(EVENT_COMMAND_PREFIX.length())
                 : "";
-        int fromIndex = taskDetails.indexOf(FROM_MARKER);
-        int toIndex = taskDetails.indexOf(TO_MARKER, fromIndex + FROM_MARKER.length());
-        if (fromIndex == -1 || toIndex == -1) {
+        ArrayList<MarkerMatch> fromMarkers = findMarkers(taskDetails, FROM_MARKER_PATTERN);
+        ArrayList<MarkerMatch> toMarkers = findMarkers(taskDetails, TO_MARKER_PATTERN);
+        if (fromMarkers.isEmpty() || toMarkers.isEmpty()) {
             throw new HabpyDuckException(
                     "OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)");
         }
-        assert fromIndex < toIndex : "Event start marker should appear before end marker";
+        if (fromMarkers.size() > 1 || toMarkers.size() > 1) {
+            throw new HabpyDuckException(
+                    "OH NO!!! An event should have one /from marker and one /to marker, friend.");
+        }
 
-        String description = requireText(taskDetails.substring(0, fromIndex).trim(),
+        MarkerMatch fromMarker = fromMarkers.get(0);
+        MarkerMatch toMarker = toMarkers.get(0);
+        if (fromMarker.getStartIndex() > toMarker.getStartIndex()) {
+            throw new HabpyDuckException("OH NO!!! Please put /from before /to for events, friend.");
+        }
+
+        String description = requireText(taskDetails.substring(0, fromMarker.getStartIndex()).trim(),
                 "OH NO!!! An event needs a description, friend. Try again!");
-        String from = requireText(taskDetails.substring(fromIndex + FROM_MARKER.length(), toIndex).trim(),
+        String from = requireText(taskDetails.substring(fromMarker.getEndIndex(), toMarker.getStartIndex()).trim(),
                 "OH NO!!! An event needs a start time, friend. Try again!");
-        String to = requireText(taskDetails.substring(toIndex + TO_MARKER.length()).trim(),
+        String to = requireText(taskDetails.substring(toMarker.getEndIndex()).trim(),
                 "OH NO!!! An event needs an end time, friend. Try again!");
         return new Event(description, from, to);
+    }
+
+    /**
+     * Finds command marker tokens, such as /by, while allowing flexible surrounding spaces.
+     *
+     * @param text the command details to search.
+     * @param markerPattern the marker token pattern.
+     * @return the matching marker positions.
+     */
+    private ArrayList<MarkerMatch> findMarkers(String text, Pattern markerPattern) {
+        Matcher matcher = markerPattern.matcher(text);
+        ArrayList<MarkerMatch> markers = new ArrayList<>();
+        while (matcher.find()) {
+            markers.add(new MarkerMatch(matcher.start(), matcher.end()));
+        }
+        return markers;
     }
 
     /**
@@ -342,5 +374,42 @@ public class Parser {
             throw new HabpyDuckException(errorMessage);
         }
         return text;
+    }
+
+    /**
+     * Records the start and end indexes of one command marker in the user's input.
+     */
+    private static class MarkerMatch {
+        private final int startIndex;
+        private final int endIndex;
+
+        /**
+         * Creates a marker position record.
+         *
+         * @param startIndex the index where the marker starts.
+         * @param endIndex the index just after the marker.
+         */
+        MarkerMatch(int startIndex, int endIndex) {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
+        /**
+         * Returns where the marker starts.
+         *
+         * @return the start index.
+         */
+        int getStartIndex() {
+            return startIndex;
+        }
+
+        /**
+         * Returns the index just after the marker.
+         *
+         * @return the end index.
+         */
+        int getEndIndex() {
+            return endIndex;
+        }
     }
 }
