@@ -38,7 +38,7 @@ todo read book
 Expected output:
 
 ```text
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read book
 Now you have 1 tasks in the list.
 ```
@@ -56,7 +56,7 @@ deadline return book /by 25/8/2026 1800
 Expected output:
 
 ```text
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Aug 25 2026, 6:00pm)
 Now you have 2 tasks in the list.
 ```
@@ -74,7 +74,7 @@ event project meeting /from Mon 2pm /to 4pm
 Expected output:
 
 ```text
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ```
@@ -92,7 +92,7 @@ list
 Expected output:
 
 ```text
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] read book
 2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
@@ -112,14 +112,14 @@ unmark 1
 Expected output for `mark 1`:
 
 ```text
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] read book
 ```
 
 Expected output for `unmark 1`:
 
 ```text
-OK, I've marked this task as not done yet, all the best friend:
+OK, friend. I've marked this task as not done yet:
   [T][ ] read book
 ```
 
@@ -136,7 +136,7 @@ delete 1
 Expected output:
 
 ```text
-Noted. I've removed this task:
+Got it, friend. I've removed this task:
   [T][ ] read book
 Now you have 2 tasks in the list.
 ```
@@ -154,7 +154,7 @@ find book
 Expected output:
 
 ```text
-Here are the matching tasks in your list:
+I found these matching tasks for you, friend:
 1.[T][ ] read book
 2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 ```
@@ -173,7 +173,7 @@ tag 1 #fun #school_work
 Expected output:
 
 ```text
-Got it. I've tagged this task:
+Got it, friend. I've tagged this task:
   [T][ ] read book #fun #school_work
 ```
 
@@ -190,7 +190,7 @@ untag 1 #fun
 Expected output:
 
 ```text
-Got it. I've removed that tag from this task:
+Got it, friend. I've removed that tag from this task:
   [T][ ] read book #school_work
 ```
 
@@ -207,7 +207,7 @@ findtag #school_work
 Expected output:
 
 ```text
-Here are the tasks with that tag:
+I found these tasks with that tag, friend:
 1.[T][ ] read book #school_work
 ```
 

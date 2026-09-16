@@ -43,7 +43,7 @@ public class TagCommand extends Command {
             }
         }
         if (addedTags.isEmpty()) {
-            throw new HabpyDuckException("OH NO!!! This task already has those tag(s).");
+            throw new HabpyDuckException("OH NO!!! This task already has those tag(s), friend.");
         }
 
         try {

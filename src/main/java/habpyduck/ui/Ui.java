@@ -114,7 +114,7 @@ public class Ui {
      * @param tasks the tasks to show.
      */
     public void showTaskList(ArrayList<Task> tasks) {
-        showNumberedTasks("Here are the tasks in your list:", tasks);
+        showNumberedTasks("Here are the tasks in your list, friend:", tasks);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Ui {
      * @param tasks the matching tasks to show.
      */
     public void showMatchingTasks(ArrayList<Task> tasks) {
-        showNumberedTasks("Here are the matching tasks in your list:", tasks);
+        showNumberedTasks("I found these matching tasks for you, friend:", tasks);
     }
 
     /**
@@ -132,7 +132,7 @@ public class Ui {
      * @param tasks the tagged tasks to show.
      */
     public void showTaggedTasks(ArrayList<Task> tasks) {
-        showNumberedTasks("Here are the tasks with that tag:", tasks);
+        showNumberedTasks("I found these tasks with that tag, friend:", tasks);
     }
 
     /**
@@ -155,7 +155,7 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskAdded(Task task, int taskCount) {
-        showLines("Got it. I've added this task:",
+        showLines("Got it, friend. I've added this task:",
                 "  " + task,
                 "Now you have " + taskCount + " tasks in the list.");
     }
@@ -166,7 +166,7 @@ public class Ui {
      * @param task the task that was marked.
      */
     public void showTaskMarked(Task task) {
-        showLines("YAY GOOD JOB!!! I've marked this task as done:",
+        showLines("YAY GOOD JOB!!! I've marked this task as done, friend:",
                 "  " + task);
     }
 
@@ -176,7 +176,7 @@ public class Ui {
      * @param task the task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
-        showLines("OK, I've marked this task as not done yet, all the best friend:",
+        showLines("OK, friend. I've marked this task as not done yet:",
                 "  " + task);
     }
 
@@ -187,7 +187,7 @@ public class Ui {
      * @param taskCount the number of tasks now in the list.
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        showLines("Noted. I've removed this task:",
+        showLines("Got it, friend. I've removed this task:",
                 "  " + task,
                 "Now you have " + taskCount + " tasks in the list.");
     }
@@ -198,7 +198,7 @@ public class Ui {
      * @param task the task that was tagged.
      */
     public void showTaskTagged(Task task) {
-        showLines("Got it. I've tagged this task:",
+        showLines("Got it, friend. I've tagged this task:",
                 "  " + task);
     }
 
@@ -208,7 +208,7 @@ public class Ui {
      * @param task the task that was untagged.
      */
     public void showTaskUntagged(Task task) {
-        showLines("Got it. I've removed that tag from this task:",
+        showLines("Got it, friend. I've removed that tag from this task:",
                 "  " + task);
     }
 

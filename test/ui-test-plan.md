@@ -33,36 +33,36 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Aug 25 2026, 6:00pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet, all the best friend:
+OK, friend. I've marked this task as not done yet:
   [T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] read book
 2.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
@@ -109,18 +109,18 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] join sports club
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
@@ -184,7 +184,7 @@ OH NO!!! I had trouble loading saved task on line 3: unknown task type 'X'
 OH NO!!! I had trouble loading saved task on line 4: expected 4 or 5 fields but found 3
 OH NO!!! I had trouble loading saved task on line 5: saved deadline date and time must use yyyy-MM-ddTHH:mm format
 OH NO!!! I had trouble loading saved task on line 7: task details cannot be empty
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[E][X] project | meeting (from: C:\start to: 4|5pm)
 ____________________________________________________________
@@ -223,22 +223,22 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read | book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] path \ home (by: Aug 8 2026, 8:30am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] sync | call (from: room \A to: 4 | 5pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] read | book
 2.[D][ ] path \ home (by: Aug 8 2026, 8:30am)
 3.[E][ ] sync | call (from: room \A to: 4 | 5pm)
@@ -326,51 +326,51 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Jun 6 2019, 9:00am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] join sports club
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [D][X] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
 4.[T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Got it, friend. I've removed this task:
   [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[T][X] join sports club
@@ -385,7 +385,7 @@ ____________________________________________________________
 OH NO!!! Task 9 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][X] return book (by: Jun 6 2019, 9:00am)
 3.[T][X] join sports club
@@ -442,10 +442,10 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] alpha
 Now you have 1 tasks in the list.
 ____________________________________________________________
@@ -456,16 +456,16 @@ ____________________________________________________________
 OH NO!!! I don't understand that command friend :(. Try todo, deadline, event, list, mark, unmark, delete, find, tag, untag, or findtag!
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] alpha
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] beta (by: Dec 13 2019, 11:59pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] gamma (from: 1pm to: 2pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
@@ -473,7 +473,7 @@ ____________________________________________________________
 OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [D][X] beta (by: Dec 13 2019, 11:59pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -483,11 +483,11 @@ ____________________________________________________________
 OH NO!!! Please use a number after unmark, like: unmark 2
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet, all the best friend:
+OK, friend. I've marked this task as not done yet:
   [D][ ] beta (by: Dec 13 2019, 11:59pm)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] alpha
 2.[D][ ] beta (by: Dec 13 2019, 11:59pm)
 3.[E][ ] gamma (from: 1pm to: 2pm)
@@ -547,12 +547,12 @@ ____________________________________________________________
 OH NO!!! Please tell me which task to unmark, like: unmark 2
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] keep notes
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet, all the best friend:
+OK, friend. I've marked this task as not done yet:
   [T][ ] keep notes
 ____________________________________________________________
 ____________________________________________________________
@@ -562,21 +562,21 @@ ____________________________________________________________
 OH NO!!! Task -1 does not exist in your list.
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] keep notes
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] do homework (by: Oct 4 2019, 12:00pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][X] keep notes
 2.[D][ ] do homework (by: Oct 4 2019, 12:00pm)
 3.[E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
@@ -654,7 +654,7 @@ ____________________________________________________________
 OH NO!!! A deadline should have only one /by marker, friend.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Aug 25 2026, 6:00pm)
 Now you have 1 tasks in the list.
 ____________________________________________________________
@@ -668,12 +668,12 @@ ____________________________________________________________
 OH NO!!! An event should have one /from marker and one /to marker, friend.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [E][ ] meeting (from: Mon 2pm to: 4pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[D][ ] return book (by: Aug 25 2026, 6:00pm)
 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
@@ -717,39 +717,39 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Jun 6 2019, 9:00am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] buy milk
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-YAY GOOD JOB!!! I've marked this task as done:
+YAY GOOD JOB!!! I've marked this task as done, friend:
   [D][X] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+I found these matching tasks for you, friend:
 1.[T][X] read book
 2.[D][X] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+I found these matching tasks for you, friend:
 1.[T][ ] buy milk
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+I found these matching tasks for you, friend:
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Please tell me what keyword to find, like: find book
@@ -798,21 +798,21 @@ Hi friend! I'm HabpyDuck.
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Got it, friend. I've added this task:
   [D][ ] return book (by: Jun 6 2019, 9:00am)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've tagged this task:
+Got it, friend. I've tagged this task:
   [T][ ] read book #fun #school_work
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! This task already has those tag(s).
+OH NO!!! This task already has those tag(s), friend.
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Tags must start with # and use only letters, numbers, hyphens, or underscores. Try something like: tag 2 #fun
@@ -821,30 +821,30 @@ ____________________________________________________________
 OH NO!!! Please use a number after tag, like: tag 2
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+I found these matching tasks for you, friend:
 1.[T][ ] read book #fun #school_work
 2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks with that tag:
+I found these tasks with that tag, friend:
 1.[T][ ] read book #fun #school_work
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've removed that tag from this task:
+Got it, friend. I've removed that tag from this task:
   [T][ ] read book #school_work
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks with that tag:
+I found these tasks with that tag, friend:
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks with that tag:
+I found these tasks with that tag, friend:
 1.[T][ ] read book #school_work
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! This task does not have that tag.
+OH NO!!! This task does not have that tag, friend.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Here are the tasks in your list, friend:
 1.[T][ ] read book #school_work
 2.[D][ ] return book (by: Jun 6 2019, 9:00am)
 ____________________________________________________________

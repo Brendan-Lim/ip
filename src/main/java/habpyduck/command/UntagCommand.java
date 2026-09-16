@@ -36,7 +36,7 @@ public class UntagCommand extends Command {
         int taskIndex = requireValidTaskIndex(taskNumber, tasks);
         boolean hasRemovedTag = tasks.removeTag(taskIndex, tag);
         if (!hasRemovedTag) {
-            throw new HabpyDuckException("OH NO!!! This task does not have that tag.");
+            throw new HabpyDuckException("OH NO!!! This task does not have that tag, friend.");
         }
 
         try {

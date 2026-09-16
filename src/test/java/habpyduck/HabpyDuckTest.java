@@ -22,11 +22,11 @@ public class HabpyDuckTest {
         String listResponse = habpyDuck.getResponse("list");
 
         assertEquals(String.join(System.lineSeparator(),
-                "Got it. I've added this task:",
+                "Got it, friend. I've added this task:",
                 "  [T][ ] read book",
                 "Now you have 1 tasks in the list."), addResponse);
         assertEquals(String.join(System.lineSeparator(),
-                "Here are the tasks in your list:",
+                "Here are the tasks in your list, friend:",
                 "1.[T][ ] read book"), listResponse);
     }
 
@@ -39,7 +39,7 @@ public class HabpyDuckTest {
 
         assertEquals("OH NO!!! A todo needs a description, friend. Try something like: todo read book",
                 invalidResponse);
-        assertEquals("Here are the tasks in your list:", listResponse);
+        assertEquals("Here are the tasks in your list, friend:", listResponse);
     }
 
     @Test
@@ -51,10 +51,10 @@ public class HabpyDuckTest {
         String findTagResponse = habpyDuck.getResponse("findtag #fun");
 
         assertEquals(String.join(System.lineSeparator(),
-                "Got it. I've tagged this task:",
+                "Got it, friend. I've tagged this task:",
                 "  [T][ ] read book #fun #school_work"), tagResponse);
         assertEquals(String.join(System.lineSeparator(),
-                "Here are the tasks with that tag:",
+                "I found these tasks with that tag, friend:",
                 "1.[T][ ] read book #fun #school_work"), findTagResponse);
     }
 
@@ -67,7 +67,7 @@ public class HabpyDuckTest {
         String untagResponse = habpyDuck.getResponse("untag 1 #fun");
 
         assertEquals(String.join(System.lineSeparator(),
-                "Got it. I've removed that tag from this task:",
+                "Got it, friend. I've removed that tag from this task:",
                 "  [T][ ] read book #school"), untagResponse);
     }
 
@@ -82,7 +82,7 @@ public class HabpyDuckTest {
         assertEquals("OH NO!!! Tags must start with # and use only letters, numbers, hyphens, "
                 + "or underscores. Try something like: tag 2 #fun", invalidResponse);
         assertEquals(String.join(System.lineSeparator(),
-                "Here are the tasks in your list:",
+                "Here are the tasks in your list, friend:",
                 "1.[T][ ] read book"), listResponse);
     }
 
