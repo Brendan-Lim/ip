@@ -4,11 +4,41 @@ HabpyDuck is a friendly task-tracking chatbot that helps you remember todos, dea
 
 ## Quick Start
 
-1. Download and run the HabpyDuck application.
-2. Type a command in the input box.
-3. Press Enter or click **Send**.
+1. Install JDK 25 or later.
+2. Download `habpyduck.jar` from the latest release.
+3. Put `habpyduck.jar` in the folder where you want HabpyDuck to store its data.
+4. Open a terminal in that folder and run:
+
+   ```bash
+   java -jar habpyduck.jar
+   ```
+
+5. Wait for the HabpyDuck window to appear.
+6. Enter a command and press Enter or click **Send**.
+7. Try these commands first:
+
+   ```text
+   todo read the user guide
+   list
+   ```
+
+If HabpyDuck does not start, check that `habpyduck.jar` is in the current folder and rerun
+`java -jar habpyduck.jar`.
 
 HabpyDuck starts with an empty task list on first use. Your tasks are saved automatically after changes.
+
+## Understanding Command Formats
+
+This guide uses these conventions:
+
+- `UPPER_CASE` words are values you provide, such as a task description or task number.
+- `[square brackets]` show optional parts.
+- `...` means you can repeat the previous part.
+- Commands should be entered one line at a time.
+- Command words and markers such as `/by`, `/from`, and `/to` must be typed exactly as shown.
+
+For example, in `deadline DESCRIPTION /by DD/MM/YYYY [HHmm]`, replace `DESCRIPTION`, `DD/MM/YYYY`, and `HHmm`
+with your own task details, but type `deadline` and `/by` exactly as shown.
 
 ## Command Summary
 
