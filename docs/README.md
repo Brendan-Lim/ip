@@ -1,7 +1,7 @@
 # HabpyDuck User Guide
 
 HabpyDuck is a friendly task-tracking chatbot that helps you remember todos, deadlines, and events.
-
+![HabpyDuck GUI](Ui.png)
 ## Quick Start
 
 1. Install JDK 25 or later.
