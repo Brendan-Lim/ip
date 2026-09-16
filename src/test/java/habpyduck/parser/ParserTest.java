@@ -84,6 +84,12 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_addCommandsWithExtraSpacesAroundMarkers_returnsAddCommand() throws HabpyDuckException {
+        assertInstanceOf(AddCommand.class, parser.parse("deadline return book    /by    25/8/2026 1800"));
+        assertInstanceOf(AddCommand.class, parser.parse("event meeting    /from    2pm    /to    4pm"));
+    }
+
+    @Test
     public void parse_byeCommand_returnsExitCommandThatExits() throws HabpyDuckException {
         Command command = parser.parse("bye");
 
@@ -175,6 +181,12 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_deadlineWithDuplicateByMarkers_exceptionThrown() {
+        assertParseExceptionMessage("deadline return book /by 25/8/2026 1800 /by 26/8/2026 1800",
+                "OH NO!!! A deadline should have only one /by marker, friend.");
+    }
+
+    @Test
     public void parse_deadlineWithInvalidDateTime_exceptionThrown() {
         assertParseExceptionMessage("deadline return book /by 2026-08-25",
                 INVALID_DEADLINE_DATE_TIME_MESSAGE);
@@ -184,6 +196,18 @@ public class ParserTest {
     public void parse_eventWithoutRequiredMarkers_exceptionThrown() {
         assertParseExceptionMessage("event meeting /from 2pm",
                 "OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)");
+    }
+
+    @Test
+    public void parse_eventWithDuplicateMarkers_exceptionThrown() {
+        assertParseExceptionMessage("event meeting /from 2pm /from 3pm /to 4pm",
+                "OH NO!!! An event should have one /from marker and one /to marker, friend.");
+    }
+
+    @Test
+    public void parse_eventWithToBeforeFrom_exceptionThrown() {
+        assertParseExceptionMessage("event meeting /to 4pm /from 2pm",
+                "OH NO!!! Please put /from before /to for events, friend.");
     }
 
     @Test

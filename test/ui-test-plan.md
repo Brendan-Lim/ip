@@ -603,8 +603,11 @@ mark 1
 deadline return book
 deadline /by Sunday
 deadline return book /by 2019-10-15
+deadline return book /by 25/8/2026 1800 /by 26/8/2026 1800
 deadline return book /by 25/8/2026 1800
 event meeting /from Mon 2pm
+event meeting /to 4pm /from Mon 2pm
+event meeting /from Mon 2pm /from Tue 3pm /to 4pm
 event meeting /from Mon 2pm /to 4pm
 list
 bye
@@ -642,10 +645,13 @@ ____________________________________________________________
 OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)
 ____________________________________________________________
 ____________________________________________________________
-OH NO!!! Please use this format for deadlines: deadline DESCRIPTION /by DD/MM/YYYY HHmm :)
+OH NO!!! A deadline needs a description, friend. Try again!
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Please enter the deadline date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800
+____________________________________________________________
+____________________________________________________________
+OH NO!!! A deadline should have only one /by marker, friend.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
@@ -654,6 +660,12 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! Please use this format for events: event DESCRIPTION /from START /to END :)
+____________________________________________________________
+____________________________________________________________
+OH NO!!! Please put /from before /to for events, friend.
+____________________________________________________________
+____________________________________________________________
+OH NO!!! An event should have one /from marker and one /to marker, friend.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
