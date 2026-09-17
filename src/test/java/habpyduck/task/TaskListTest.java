@@ -72,7 +72,8 @@ public class TaskListTest {
     public void findByKeyword_keywordAppearsOnlyOutsideDescription_returnsEmptyList() {
         TaskList tasks = new TaskList();
         tasks.add(new Deadline("return item", LocalDateTime.of(2026, 8, 25, 18, 0)));
-        tasks.add(new Event("project meeting", "book room", "4pm"));
+        tasks.add(new Event("project meeting", LocalDateTime.of(2026, 8, 25, 14, 0),
+                LocalDateTime.of(2026, 8, 25, 16, 0)));
         tasks.addTag(0, "#book");
 
         ArrayList<Task> matchingTasks = tasks.findByKeyword("book");

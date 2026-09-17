@@ -1,22 +1,27 @@
 package habpyduck.task;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import habpyduck.storage.Storage;
 
 /**
  * Represents a task that starts at a specific date or time and ends at another.
  */
 public class Event extends Task {
-    protected String from;
-    protected String to;
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+
+    protected LocalDateTime from;
+    protected LocalDateTime to;
 
     /**
      * Creates an event task with the given description, start, and end.
      *
      * @param description the text that describes the event.
-     * @param from the date or time when the event starts.
-     * @param to the date or time when the event ends.
+     * @param from the date and time when the event starts.
+     * @param to the date and time when the event ends.
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -31,8 +36,8 @@ public class Event extends Task {
     public String toFileString() {
         return Storage.EVENT_TASK_TYPE + Storage.FILE_FIELD_SEPARATOR + getDoneStatus()
                 + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(description)
-                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(from)
-                + Storage.FILE_FIELD_SEPARATOR + Storage.escapeFileField(to)
+                + Storage.FILE_FIELD_SEPARATOR + from
+                + Storage.FILE_FIELD_SEPARATOR + to
                 + formatTagsForFile();
     }
 
@@ -43,6 +48,7 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + getBaseDisplayText() + " (from: " + from + " to: " + to + ")" + getDisplayTags();
+        return "[E]" + getBaseDisplayText() + " (from: " + from.format(DISPLAY_DATE_TIME_FORMAT)
+                + " to: " + to.format(DISPLAY_DATE_TIME_FORMAT) + ")" + getDisplayTags();
     }
 }

@@ -11,7 +11,7 @@ Verify that the chatbot can add todos, deadlines, and events; list them with typ
 ```text
 todo read book
 deadline return book /by 25/8/2026 1800
-event project meeting /from Mon 2pm /to 4pm
+event project meeting /from 25/8/2026 1400 /to 25/8/2026 1600
 mark 1
 list
 unmark 1
@@ -44,7 +44,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+  [E][ ] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -55,7 +55,7 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: 25/8/2026 1800)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 ____________________________________________________________
 ____________________________________________________________
 OK, friend. I've marked this task as not done yet:
@@ -65,7 +65,7 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][ ] read book
 2.[D][ ] return book (by: 25/8/2026 1800)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
@@ -83,7 +83,7 @@ Verify that the chatbot loads todo, deadline, and event tasks from the saved fil
 ```text
 T | 1 | read book
 D | 0 | return book | 2019-06-06T09:00
-E | 1 | project meeting | Aug 6th 2pm | 4pm
+E | 1 | project meeting | 2019-08-06T14:00 | 2019-08-06T16:00
 ```
 
 ### Inputs
@@ -112,7 +112,7 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: 6/6/2019 0900)
-3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
+3.[E][X] project meeting (from: 6/8/2019 1400 to: 6/8/2019 1600)
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
@@ -123,7 +123,7 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][ ] return book (by: 6/6/2019 0900)
-3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)
+3.[E][X] project meeting (from: 6/8/2019 1400 to: 6/8/2019 1600)
 4.[T][ ] join sports club
 ____________________________________________________________
 ____________________________________________________________
@@ -136,7 +136,7 @@ ____________________________________________________________
 ```text
 T | 1 | read book
 D | 0 | return book | 2019-06-06T09:00
-E | 1 | project meeting | Aug 6th 2pm | 4pm
+E | 1 | project meeting | 2019-08-06T14:00 | 2019-08-06T16:00
 T | 0 | join sports club
 ```
 
@@ -154,7 +154,7 @@ D | 2 | bad status | tomorrow
 X | 0 | bad type
 D | 0 | missing date
 D | 0 | invalid date | tomorrow
-E | 1 | project \| meeting | C:\\start | 4\|5pm
+E | 1 | project meeting | 2026-08-25T14:00 | 2026-08-25T16:00
 T | 0 |    
 ```
 
@@ -186,7 +186,7 @@ OH NO!!! I had trouble loading saved task on line 5: saved deadline date and tim
 OH NO!!! I had trouble loading saved task on line 7: task details cannot be empty
 Here are the tasks in your list, friend:
 1.[T][X] read book
-2.[E][X] project | meeting (from: C:\start to: 4|5pm)
+2.[E][X] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
@@ -204,7 +204,7 @@ Verify that task text containing pipes and backslashes can be saved without brea
 ```text
 todo read | book
 deadline path \ home /by 8/8/2026 0830
-event sync | call /from room \A /to 4 | 5pm
+event sync | call /from 8/8/2026 1400 /to 8/8/2026 1700
 list
 bye
 ```
@@ -234,14 +234,14 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] sync | call (from: room \A to: 4 | 5pm)
+  [E][ ] sync | call (from: 8/8/2026 1400 to: 8/8/2026 1700)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][ ] read | book
 2.[D][ ] path \ home (by: 8/8/2026 0830)
-3.[E][ ] sync | call (from: room \A to: 4 | 5pm)
+3.[E][ ] sync | call (from: 8/8/2026 1400 to: 8/8/2026 1700)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
@@ -253,7 +253,7 @@ ____________________________________________________________
 ```text
 T | 0 | read \| book
 D | 0 | path \\ home | 2026-08-08T08:30
-E | 0 | sync \| call | room \\A | 4 \| 5pm
+E | 0 | sync \| call | 2026-08-08T14:00 | 2026-08-08T17:00
 ```
 
 ## Test Case: empty input exits cleanly
@@ -297,7 +297,7 @@ Verify that deleting a middle task removes only that task, renumbers the remaini
 ```text
 todo read book
 deadline return book /by 6/6/2019 0900
-event project meeting /from Aug 6th 2pm /to 4pm
+event project meeting /from 6/8/2019 1400 /to 6/8/2019 1600
 todo join sports club
 mark 1
 mark 2
@@ -337,7 +337,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+  [E][ ] project meeting (from: 6/8/2019 1400 to: 6/8/2019 1600)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -361,12 +361,12 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][X] read book
 2.[D][X] return book (by: 6/6/2019 0900)
-3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+3.[E][ ] project meeting (from: 6/8/2019 1400 to: 6/8/2019 1600)
 4.[T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've removed this task:
-  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+  [E][ ] project meeting (from: 6/8/2019 1400 to: 6/8/2019 1600)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -418,7 +418,7 @@ todo
 blah
 list
 deadline beta /by 13/12/2019 2359
-event gamma /from 1pm /to 2pm
+event gamma /from 13/12/2019 1300 /to 13/12/2019 1400
 event delta /from 3pm
 mark 2
 mark 99
@@ -466,7 +466,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] gamma (from: 1pm to: 2pm)
+  [E][ ] gamma (from: 13/12/2019 1300 to: 13/12/2019 1400)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -490,7 +490,7 @@ ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][ ] alpha
 2.[D][ ] beta (by: 13/12/2019 2359)
-3.[E][ ] gamma (from: 1pm to: 2pm)
+3.[E][ ] gamma (from: 13/12/2019 1300 to: 13/12/2019 1400)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
@@ -516,7 +516,7 @@ mark 0
 mark -1
 mark 1
 deadline do homework /by 4/10/2019 1200
-event orientation week /from 4/10/2019 /to 11/10/2019
+event orientation week /from 4/10/2019 0000 /to 11/10/2019 0000
 list
 bye
 ```
@@ -571,14 +571,14 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
+  [E][ ] orientation week (from: 4/10/2019 0000 to: 11/10/2019 0000)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[T][X] keep notes
 2.[D][ ] do homework (by: 4/10/2019 1200)
-3.[E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
+3.[E][ ] orientation week (from: 4/10/2019 0000 to: 11/10/2019 0000)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!
@@ -605,9 +605,9 @@ deadline return book /by 2019-10-15
 deadline return book /by 25/8/2026 1800 /by 26/8/2026 1800
 deadline return book /by 25/8/2026 1800
 event meeting /from Mon 2pm
-event meeting /to 4pm /from Mon 2pm
-event meeting /from Mon 2pm /from Tue 3pm /to 4pm
-event meeting /from Mon 2pm /to 4pm
+event meeting /to 25/8/2026 1600 /from 25/8/2026 1400
+event meeting /from 25/8/2026 1400 /from 25/8/2026 1500 /to 25/8/2026 1600
+event meeting /from 25/8/2026 1400 /to 25/8/2026 1600
 list
 bye
 ```
@@ -668,13 +668,13 @@ OH NO!!! An event should have one /from marker and one /to marker, friend.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] meeting (from: Mon 2pm to: 4pm)
+  [E][ ] meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[D][ ] return book (by: 25/8/2026 1800)
-2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+2.[E][ ] meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!

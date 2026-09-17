@@ -48,7 +48,7 @@ public class ParserTest {
         assertEquals(CommandType.UNTAG, parser.getCommandType("untag 1 #fun"));
         assertEquals(CommandType.TODO, parser.getCommandType("todo read book"));
         assertEquals(CommandType.DEADLINE, parser.getCommandType("deadline return book /by 25/8/2026 1800"));
-        assertEquals(CommandType.EVENT, parser.getCommandType("event meeting /from 2pm /to 4pm"));
+        assertEquals(CommandType.EVENT, parser.getCommandType("event meeting /from 25/8/2026 1400 /to 25/8/2026 1600"));
         assertEquals(CommandType.BYE, parser.getCommandType("bye"));
     }
 
@@ -81,13 +81,15 @@ public class ParserTest {
         assertInstanceOf(AddCommand.class, parser.parse("todo read book"));
         assertInstanceOf(AddCommand.class, parser.parse("deadline return book /by 25/8/2026"));
         assertInstanceOf(AddCommand.class, parser.parse("deadline return book /by 25/8/2026 1800"));
-        assertInstanceOf(AddCommand.class, parser.parse("event meeting /from 2pm /to 4pm"));
+        assertInstanceOf(AddCommand.class,
+                parser.parse("event meeting /from 25/8/2026 1400 /to 25/8/2026 1600"));
     }
 
     @Test
     public void parse_addCommandsWithExtraSpacesAroundMarkers_returnsAddCommand() throws HabpyDuckException {
         assertInstanceOf(AddCommand.class, parser.parse("deadline return book    /by    25/8/2026 1800"));
-        assertInstanceOf(AddCommand.class, parser.parse("event meeting    /from    2pm    /to    4pm"));
+        assertInstanceOf(AddCommand.class,
+                parser.parse("event meeting    /from    25/8/2026 1400    /to    25/8/2026 1600"));
     }
 
     @Test
@@ -228,6 +230,19 @@ public class ParserTest {
     public void parse_eventWithoutEnd_exceptionThrown() {
         assertParseExceptionMessage("event meeting /from 2pm /to ",
                 "OH NO!!! An event needs an end time, friend. Try again!");
+    }
+
+    @Test
+    public void parseUserEventDateTime_validDateTime_returnsLocalDateTime() throws HabpyDuckException {
+        LocalDateTime expected = LocalDateTime.of(2026, 8, 25, 18, 0);
+
+        assertEquals(expected, parser.parseUserEventDateTime("25/8/2026 1800"));
+    }
+
+    @Test
+    public void parseUserEventDateTime_invalidFormat_exceptionThrown() {
+        assertParseExceptionMessage("event meeting /from tomorrow /to 25/8/2026 1800",
+                "OH NO!!! Please enter the event date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800");
     }
 
     @Test

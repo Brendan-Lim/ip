@@ -148,8 +148,8 @@ public class Storage {
                 assert parts.length == EVENT_FIELD_COUNT || parts.length == EVENT_FIELD_COUNT + 1
                         : "Validated event should have expected fields";
                 task = new Event(unescapeFileField(parts[TASK_DESCRIPTION_INDEX]),
-                        unescapeFileField(parts[EVENT_START_INDEX]),
-                        unescapeFileField(parts[EVENT_END_INDEX]));
+                        parseSavedEventDateTime(unescapeFileField(parts[EVENT_START_INDEX]), "start"),
+                        parseSavedEventDateTime(unescapeFileField(parts[EVENT_END_INDEX]), "end"));
                 break;
             case TODO_TASK_TYPE:
                 assert parts.length == TODO_FIELD_COUNT || parts.length == TODO_FIELD_COUNT + 1
@@ -183,6 +183,24 @@ public class Storage {
             } catch (DateTimeParseException dateError) {
                 throw new HabpyDuckException("saved deadline date and time must use yyyy-MM-ddTHH:mm format");
             }
+        }
+    }
+
+    /**
+     * Converts an event start or end text from the save file into a LocalDateTime.
+     *
+     * @param dateTimeText the saved date and time text.
+     * @param eventBoundary whether the value is an event start or end.
+     * @return the parsed date and time.
+     * @throws HabpyDuckException if the saved value is not an ISO date-time.
+     */
+    private LocalDateTime parseSavedEventDateTime(String dateTimeText, String eventBoundary)
+            throws HabpyDuckException {
+        try {
+            return LocalDateTime.parse(dateTimeText);
+        } catch (DateTimeParseException e) {
+            throw new HabpyDuckException("saved event " + eventBoundary
+                    + " date and time must use yyyy-MM-ddTHH:mm format");
         }
     }
 

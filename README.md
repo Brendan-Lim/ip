@@ -14,7 +14,7 @@ HabpyDuck is a task-tracking chatbot that helps you remember todos, deadlines, a
 | --- | --- |
 | Add a todo | `todo DESCRIPTION` |
 | Add a deadline | `deadline DESCRIPTION /by DD/MM/YYYY [HHmm]` |
-| Add an event | `event DESCRIPTION /from START /to END` |
+| Add an event | `event DESCRIPTION /from DD/MM/YYYY HHmm /to DD/MM/YYYY HHmm` |
 | List tasks | `list` |
 | Mark a task as done | `mark TASK_NUMBER` |
 | Mark a task as not done | `unmark TASK_NUMBER` |
@@ -69,14 +69,14 @@ Adds a task that starts and ends at given times.
 Example:
 
 ```text
-event project meeting /from Mon 2pm /to 4pm
+event project meeting /from 25/8/2026 1400 /to 25/8/2026 1600
 ```
 
 Expected output:
 
 ```text
 Got it, friend. I've added this task:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+  [E][ ] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 Now you have 3 tasks in the list.
 ```
 
@@ -96,7 +96,7 @@ Expected output:
 Here are the tasks in your list, friend:
 1.[T][ ] read book
 2.[D][ ] return book (by: 25/8/2026 1800)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
 ```
 
 ## Marking And Unmarking Tasks

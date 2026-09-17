@@ -112,6 +112,34 @@ public class Parser {
      * @throws HabpyDuckException if the deadline is not in d/M/yyyy or d/M/yyyy HHmm format.
      */
     public LocalDateTime parseUserDeadlineDateTime(String dateTimeText) throws HabpyDuckException {
+        return parseUserDateTime(dateTimeText, "deadline");
+    }
+
+    /**
+     * Converts event text entered by the user into a LocalDateTime.
+     *
+     * @param dateTimeText the date and time entered by the user.
+     * @return the parsed date and time.
+     * @throws HabpyDuckException if the event is not in d/M/yyyy HHmm format.
+     */
+    public LocalDateTime parseUserEventDateTime(String dateTimeText) throws HabpyDuckException {
+        try {
+            return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new HabpyDuckException("OH NO!!! Please enter the event date and time in DD/MM/YYYY HHmm format, "
+                    + "like: 25/8/2026 1800");
+        }
+    }
+
+    /**
+     * Converts a user-entered deadline or event date into a LocalDateTime.
+     *
+     * @param dateTimeText the date and optional time entered by the user.
+     * @param taskType the task type to use in an error message.
+     * @return the parsed date and time.
+     * @throws HabpyDuckException if the text is not in d/M/yyyy or d/M/yyyy HHmm format.
+     */
+    private LocalDateTime parseUserDateTime(String dateTimeText, String taskType) throws HabpyDuckException {
         try {
             return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
         } catch (DateTimeParseException dateTimeError) {
@@ -119,7 +147,7 @@ public class Parser {
                 return LocalDate.parse(dateTimeText, INPUT_DATE_FORMAT).atStartOfDay();
             } catch (DateTimeParseException dateError) {
                 throw new HabpyDuckException(
-                        "OH NO!!! Please enter the deadline date in DD/MM/YYYY format, "
+                        "OH NO!!! Please enter the " + taskType + " date in DD/MM/YYYY format, "
                                 + "or include time like: 25/8/2026 1800");
             }
         }
@@ -349,7 +377,7 @@ public class Parser {
                 "OH NO!!! An event needs a start time, friend. Try again!");
         String to = requireText(taskDetails.substring(toMarker.getEndIndex()).trim(),
                 "OH NO!!! An event needs an end time, friend. Try again!");
-        return new Event(description, from, to);
+        return new Event(description, parseUserEventDateTime(from), parseUserEventDateTime(to));
     }
 
     /**
