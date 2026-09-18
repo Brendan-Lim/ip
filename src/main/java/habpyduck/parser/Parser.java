@@ -120,15 +120,10 @@ public class Parser {
      *
      * @param dateTimeText the date and time entered by the user.
      * @return the parsed date and time.
-     * @throws HabpyDuckException if the event is not in d/M/yyyy HHmm format.
+     * @throws HabpyDuckException if the event is not in d/M/yyyy or d/M/yyyy HHmm format.
      */
     public LocalDateTime parseUserEventDateTime(String dateTimeText) throws HabpyDuckException {
-        try {
-            return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMAT);
-        } catch (DateTimeParseException e) {
-            throw new HabpyDuckException("OH NO!!! Please enter the event date and time in DD/MM/YYYY HHmm format, "
-                    + "like: 25/8/2026 1800");
-        }
+        return parseUserDateTime(dateTimeText, "event");
     }
 
     /**

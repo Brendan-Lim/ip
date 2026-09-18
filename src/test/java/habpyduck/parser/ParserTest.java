@@ -239,6 +239,18 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_eventWithDateOnlyStartAndEnd_returnsAddCommand() throws HabpyDuckException {
+        assertInstanceOf(AddCommand.class,
+                parser.parse("event orientation /from 20/9/2026 /to 25/9/2026"));
+    }
+
+    @Test
+    public void parse_eventWithMixedDateOnlyAndDateTime_returnsAddCommand() throws HabpyDuckException {
+        assertInstanceOf(AddCommand.class,
+                parser.parse("event hackathon /from 20/9/2026 0900 /to 21/9/2026"));
+    }
+
+    @Test
     public void parse_eventWithStartAfterEnd_exceptionThrown() {
         assertParseExceptionMessage("event meeting /from 18/9/2026 1800 /to 18/9/2026 1600",
                 "OH NO!!! An event must end after it starts, friend.");
@@ -258,9 +270,16 @@ public class ParserTest {
     }
 
     @Test
+    public void parseUserEventDateTime_validDateOnly_returnsStartOfDay() throws HabpyDuckException {
+        LocalDateTime expected = LocalDateTime.of(2026, 8, 25, 0, 0);
+
+        assertEquals(expected, parser.parseUserEventDateTime("25/8/2026"));
+    }
+
+    @Test
     public void parseUserEventDateTime_invalidFormat_exceptionThrown() {
-        assertParseExceptionMessage("event meeting /from tomorrow /to 25/8/2026 1800",
-                "OH NO!!! Please enter the event date and time in DD/MM/YYYY HHmm format, like: 25/8/2026 1800");
+        assertParseExceptionMessage("event meeting /from 20/13/2026 /to 25/8/2026 1800",
+                "OH NO!!! Please enter the event date in DD/MM/YYYY format, or include time like: 25/8/2026 1800");
     }
 
     @Test

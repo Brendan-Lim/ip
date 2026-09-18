@@ -589,7 +589,8 @@ ____________________________________________________________
 
 ### Aim
 
-Verify that the chatbot reports user-friendly errors for empty task descriptions, unknown commands, invalid task numbers, and malformed deadline/event commands.
+Verify that the chatbot accepts date-only events and reports user-friendly errors for empty task descriptions, unknown
+commands, invalid task numbers, and malformed deadline/event commands.
 
 ### Inputs
 
@@ -609,7 +610,7 @@ event meeting /to 25/8/2026 1600 /from 25/8/2026 1400
 event meeting /from 25/8/2026 1400 /from 25/8/2026 1500 /to 25/8/2026 1600
 event meeting /from 18/9/2026 1800 /to 18/9/2026 1600
 event meeting /from 18/9/2026 1800 /to 18/9/2026 1800
-event meeting /from 25/8/2026 1400 /to 25/8/2026 1600
+event meeting /from 25/8/2026 /to 26/8/2026
 list
 bye
 ```
@@ -676,13 +677,13 @@ OH NO!!! An event must end after it starts, friend.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:
-  [E][ ] meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
+  [E][ ] meeting (from: 25/8/2026 0000 to: 26/8/2026 0000)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list, friend:
 1.[D][ ] return book (by: 25/8/2026 1800)
-2.[E][ ] meeting (from: 25/8/2026 1400 to: 25/8/2026 1600)
+2.[E][ ] meeting (from: 25/8/2026 0000 to: 26/8/2026 0000)
 ____________________________________________________________
 ____________________________________________________________
 Bye friend. Hope to see you again soon!

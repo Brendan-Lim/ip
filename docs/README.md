@@ -46,7 +46,7 @@ with your own task details, but type `deadline` and `/by` exactly as shown.
 | --- | --- |
 | Add a todo | `todo DESCRIPTION` |
 | Add a deadline | `deadline DESCRIPTION /by DD/MM/YYYY [HHmm]` |
-| Add an event | `event DESCRIPTION /from DD/MM/YYYY HHmm /to DD/MM/YYYY HHmm` |
+| Add an event | `event DESCRIPTION /from DD/MM/YYYY [HHmm] /to DD/MM/YYYY [HHmm]` |
 | List tasks | `list` |
 | Mark a task as done | `mark TASK_NUMBER` |
 | Mark a task as not done | `unmark TASK_NUMBER` |
@@ -97,10 +97,13 @@ Now you have 2 tasks in the list.
 
 ### Add an event: `event`
 
-Use `event` for a task with a start and end date and time. Both values must use `DD/MM/YYYY HHmm`.
+Use `event` for a task with a start and end date and time. Both `/from` and `/to` must use `DD/MM/YYYY`; their
+times are optional and use `HHmm`. The start must be earlier than the end.
 
 ```text
+event orientation /from 20/9/2026 /to 25/9/2026
 event project meeting /from 25/8/2026 1400 /to 25/8/2026 1600
+event hackathon /from 20/9/2026 0900 /to 21/9/2026
 ```
 
 Expected response:
