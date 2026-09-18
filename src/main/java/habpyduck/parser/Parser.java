@@ -377,7 +377,12 @@ public class Parser {
                 "OH NO!!! An event needs a start time, friend. Try again!");
         String to = requireText(taskDetails.substring(toMarker.getEndIndex()).trim(),
                 "OH NO!!! An event needs an end time, friend. Try again!");
-        return new Event(description, parseUserEventDateTime(from), parseUserEventDateTime(to));
+        LocalDateTime startDateTime = parseUserEventDateTime(from);
+        LocalDateTime endDateTime = parseUserEventDateTime(to);
+        if (!startDateTime.isBefore(endDateTime)) {
+            throw new HabpyDuckException("OH NO!!! An event must end after it starts, friend.");
+        }
+        return new Event(description, startDateTime, endDateTime);
     }
 
     /**

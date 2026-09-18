@@ -607,6 +607,8 @@ deadline return book /by 25/8/2026 1800
 event meeting /from Mon 2pm
 event meeting /to 25/8/2026 1600 /from 25/8/2026 1400
 event meeting /from 25/8/2026 1400 /from 25/8/2026 1500 /to 25/8/2026 1600
+event meeting /from 18/9/2026 1800 /to 18/9/2026 1600
+event meeting /from 18/9/2026 1800 /to 18/9/2026 1800
 event meeting /from 25/8/2026 1400 /to 25/8/2026 1600
 list
 bye
@@ -665,6 +667,12 @@ OH NO!!! Please put /from before /to for events, friend.
 ____________________________________________________________
 ____________________________________________________________
 OH NO!!! An event should have one /from marker and one /to marker, friend.
+____________________________________________________________
+____________________________________________________________
+OH NO!!! An event must end after it starts, friend.
+____________________________________________________________
+____________________________________________________________
+OH NO!!! An event must end after it starts, friend.
 ____________________________________________________________
 ____________________________________________________________
 Got it, friend. I've added this task:

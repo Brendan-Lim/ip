@@ -233,6 +233,24 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_eventWithStartBeforeEnd_returnsAddCommand() throws HabpyDuckException {
+        assertInstanceOf(AddCommand.class,
+                parser.parse("event meeting /from 18/9/2026 1400 /to 18/9/2026 1600"));
+    }
+
+    @Test
+    public void parse_eventWithStartAfterEnd_exceptionThrown() {
+        assertParseExceptionMessage("event meeting /from 18/9/2026 1800 /to 18/9/2026 1600",
+                "OH NO!!! An event must end after it starts, friend.");
+    }
+
+    @Test
+    public void parse_eventWithStartEqualToEnd_exceptionThrown() {
+        assertParseExceptionMessage("event meeting /from 18/9/2026 1800 /to 18/9/2026 1800",
+                "OH NO!!! An event must end after it starts, friend.");
+    }
+
+    @Test
     public void parseUserEventDateTime_validDateTime_returnsLocalDateTime() throws HabpyDuckException {
         LocalDateTime expected = LocalDateTime.of(2026, 8, 25, 18, 0);
 
