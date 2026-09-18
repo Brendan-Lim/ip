@@ -64,7 +64,7 @@ Now you have 2 tasks in the list.
 
 ## Adding Events
 
-Adds a task that starts and ends at given times.
+Adds a task that starts and ends at given times. The start date and time must be earlier than the end date and time.
 
 Example:
 
